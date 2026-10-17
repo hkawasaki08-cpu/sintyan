@@ -11,11 +11,11 @@
       --accent-yellow: #ffd000;
       --accent-green: #00e676;
       --accent-blue: #00b0ff;
+      --accent-red: #ff5252;
       --text-main: #ffffff;
       --text-sub: #90a4ae;
       --border-color: #37474f;
-      --header-height: 50px;
-      --footer-height: 100px;
+      --header-height: 48px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -26,13 +26,13 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     /* ① ヘッダー・進捗バナー */
     header {
       background: var(--card-bg);
-      padding: 0 12px;
+      padding: 0 10px;
       height: var(--header-height);
       border-bottom: 1px solid var(--border-color);
       display: flex;
@@ -40,30 +40,13 @@
       align-items: center;
       flex-shrink: 0;
     }
-    .status-badge {
-      display: flex;
-      gap: 10px;
-    }
-    .badge-box {
-      font-size: 10px;
-      line-height: 1.2;
-    }
-    .badge-box strong {
-      display: block;
-      font-size: 13px;
-    }
+    .status-badge { display: flex; gap: 8px; }
+    .badge-box { font-size: 10px; line-height: 1.1; }
+    .badge-box strong { display: block; font-size: 13px; }
     .badge-now { color: var(--accent-yellow); }
     .badge-next { color: var(--accent-blue); }
-    .progress-count {
-      text-align: right;
-      font-size: 11px;
-      color: var(--text-sub);
-    }
-    .progress-count span {
-      font-size: 16px;
-      color: var(--accent-green);
-      font-weight: bold;
-    }
+    .progress-count { text-align: right; font-size: 11px; color: var(--text-sub); }
+    .progress-count span { font-size: 15px; color: var(--accent-green); font-weight: bold; }
 
     /* ② メイン図面領域 */
     #drawing-container {
@@ -80,19 +63,19 @@
     }
     .canvas-ctrls {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       z-index: 10;
     }
     .ctrl-btn {
-      background: rgba(28, 36, 48, 0.85);
+      background: rgba(28, 36, 48, 0.9);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 5px 8px;
+      border-radius: 5px;
       font-size: 11px;
       backdrop-filter: blur(4px);
     }
@@ -101,18 +84,39 @@
       color: #000;
       font-weight: bold;
     }
+    .edit-sub-bar {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      display: none;
+      gap: 6px;
+      z-index: 10;
+    }
+    .edit-sub-bar.show { display: flex; }
+    .edit-btn {
+      flex: 1;
+      background: rgba(28, 36, 48, 0.9);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 6px;
+      border-radius: 5px;
+      font-size: 11px;
+      text-align: center;
+    }
+    .edit-btn.danger { color: var(--accent-red); border-color: rgba(255, 82, 82, 0.5); }
 
     /* ③ ラック断面パネル */
     #section-panel {
       background: var(--card-bg);
       border-top: 1px solid var(--border-color);
       flex-shrink: 0;
-      max-height: 35vh;
+      max-height: 34vh;
       display: flex;
       flex-direction: column;
     }
     .panel-header {
-      padding: 6px 12px;
+      padding: 6px 10px;
       background: #18202a;
       display: flex;
       justify-content: space-between;
@@ -122,19 +126,15 @@
       cursor: pointer;
     }
     .rack-view {
-      padding: 8px 12px;
+      padding: 6px 10px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
-    .rack-tier {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .rack-tier { display: flex; align-items: center; gap: 6px; }
     .tier-label {
-      width: 40px;
+      width: 36px;
       font-size: 10px;
       color: var(--text-sub);
       text-align: right;
@@ -146,10 +146,10 @@
       border-bottom: 2px solid #546e7a;
       border-left: 2px solid #546e7a;
       border-right: 2px solid #546e7a;
-      padding: 3px 6px;
+      padding: 2px 4px;
       display: flex;
-      gap: 6px;
-      min-height: 30px;
+      gap: 5px;
+      min-height: 28px;
       align-items: center;
     }
     .cable-circle {
@@ -191,14 +191,14 @@
       100% { transform: scale(1.05); box-shadow: 0 0 6px var(--accent-yellow); }
     }
 
-    /* ④ フッター・操作バー */
+    /* ④ フッター */
     footer {
       background: #141a23;
-      padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+      padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
       border-top: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       flex-shrink: 0;
     }
     .btn-step {
@@ -208,72 +208,79 @@
       color: white;
       padding: 10px;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
       cursor: pointer;
     }
     .btn-step:active { background: #1b5e20; }
-    .ai-input-box {
-      display: flex;
-      gap: 6px;
-    }
+    .ai-input-box { display: flex; gap: 5px; }
     .ai-input {
       flex: 1;
       background: #1c2430;
       border: 1px solid var(--border-color);
       color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 5px;
+      font-size: 11px;
     }
     .btn-send {
       background: #37474f;
       border: none;
       color: white;
-      padding: 0 12px;
-      border-radius: 6px;
-      font-size: 12px;
+      padding: 0 10px;
+      border-radius: 5px;
+      font-size: 11px;
     }
   </style>
 </head>
 <body>
 
+  <!-- ① ヘッダー -->
   <header>
     <div class="status-badge">
       <div class="badge-box badge-now">
-        NOW: <strong id="now-cable">-</strong>
+        NOW: <strong id="now-cable">2BA (⑤)</strong>
       </div>
       <div class="badge-box badge-next">
-        NEXT: <strong id="next-cable">-</strong>
+        NEXT: <strong id="next-cable">2BB (⑥)</strong>
       </div>
     </div>
     <div class="progress-count">
-      進捗: <span id="done-count">0</span> / <span id="total-count">0</span> 本
+      進捗: <span id="done-count">2</span> / <span id="total-count">10</span> 本
     </div>
   </header>
 
+  <!-- ② 図面キャンバス -->
   <div id="drawing-container">
     <canvas id="planCanvas"></canvas>
+    
     <div class="canvas-ctrls">
       <button class="ctrl-btn" id="btn-edit-mode">線引き編集: OFF</button>
       <button class="ctrl-btn" id="btn-load-img">図面読込</button>
       <input type="file" id="file-input" accept="image/*" style="display:none;">
       <button class="ctrl-btn" id="btn-reset-view">位置戻す</button>
     </div>
+
+    <!-- 編集モード中のみ表示する補助バー -->
+    <div class="edit-sub-bar" id="edit-sub-bar">
+      <button class="edit-btn" id="btn-undo-pt">直前1点消去</button>
+      <button class="edit-btn danger" id="btn-clear-pt">全点消去</button>
+    </div>
   </div>
 
+  <!-- ③ ラック断面ビュー -->
   <div id="section-panel">
     <div class="panel-header" id="panel-toggle">
-      <span>📐 断面並び (タップで開閉)</span>
+      <span>📐 東スタンション 断面並び (タップで開閉)</span>
       <span id="toggle-icon">▲</span>
     </div>
     <div class="rack-view" id="rack-view-content">
       <div class="rack-tier">
         <div class="tier-label">5段目</div>
         <div class="tier-bar">
-          <div class="cable-circle" data-id="2AA"><span class="code">2AA</span>①</div>
-          <div class="cable-circle" data-id="2AB"><span class="code">2AB</span>②</div>
-          <div class="cable-circle" data-id="2BA"><span class="code">2BA</span>⑤</div>
+          <div class="cable-circle done" data-id="2AA"><span class="code">2AA</span>①</div>
+          <div class="cable-circle done" data-id="2AB"><span class="code">2AB</span>②</div>
+          <div class="cable-circle active" data-id="2BA"><span class="code">2BA</span>⑤</div>
           <div class="cable-circle" data-id="2BB"><span class="code">2BB</span>⑥</div>
         </div>
       </div>
@@ -305,15 +312,17 @@
     </div>
   </div>
 
+  <!-- ④ 操作フッター -->
   <footer>
     <button class="btn-step" id="btn-next-step">完了 ▷ 次のケーブルへ</button>
     <div class="ai-input-box">
-      <input type="text" class="ai-input" id="ai-text" placeholder="例: 「5番完了」">
+      <input type="text" class="ai-input" id="ai-text" placeholder="例: 「5番完了」「2CA開始」">
       <button class="btn-send" id="btn-ai-send">入力</button>
     </div>
   </footer>
 
   <script>
+    // ケーブル順序マスタ
     const cableOrder = [
       { id: "2AA", num: 1, name: "2AA (①)", status: "done" },
       { id: "2AB", num: 2, name: "2AB (②)", status: "done" },
@@ -327,16 +336,24 @@
       { id: "2EB", num: 12, name: "2EB (⑫)", status: "pending" }
     ];
 
+    // ポイントデータ（名称付き）
     let routePoints = [
-      { x: 0.22, y: 0.12 },
-      { x: 0.52, y: 0.12 },
-      { x: 0.69, y: 0.14 },
-      { x: 0.69, y: 0.75 },
-      { x: 0.20, y: 0.86 }
+      { name: "ドラム", x: 0.22, y: 0.12 },
+      { name: "INV口", x: 0.52, y: 0.12 },
+      { name: "東①", x: 0.69, y: 0.14 },
+      { name: "東⑪", x: 0.69, y: 0.75 },
+      { name: "南スタンション", x: 0.20, y: 0.86 }
     ];
 
-    let editMode = false, img = null, offset = { x: 0, y: 0 }, scale = 1.0, dashOffset = 0;
-    const canvas = document.getElementById('planCanvas'), ctx = canvas.getContext('2d'), container = document.getElementById('drawing-container');
+    let editMode = false;
+    let img = null;
+    let offset = { x: 0, y: 0 };
+    let scale = 1.0;
+    let dashOffset = 0;
+
+    const canvas = document.getElementById('planCanvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('drawing-container');
 
     function resizeCanvas() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -349,12 +366,15 @@
     window.addEventListener('resize', resizeCanvas);
 
     function render() {
-      const w = container.clientWidth, h = container.clientHeight;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
       ctx.clearRect(0, 0, w, h);
+
       ctx.save();
       ctx.translate(offset.x, offset.y);
       ctx.scale(scale, scale);
 
+      // 1. 図面描画
       if (img) {
         ctx.drawImage(img, 0, 0, w, h);
       } else {
@@ -362,14 +382,30 @@
         for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
         for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
         ctx.fillStyle = '#546e7a';
-        ctx.font = '12px sans-serif';
-        ctx.fillText('図面読込ボタンから平面図を選択', 20, 40);
+        ctx.font = '11px sans-serif';
+        ctx.fillText('図面読込ボタンから現場写真（平面図）を選択', 16, 36);
       }
 
+      // 2. ルート描画
       if (routePoints.length > 1) {
+        // 下地（緑実線）
         ctx.beginPath();
         ctx.moveTo(routePoints[0].x * w, routePoints[0].y * h);
-        for (let i = 1; i < routePoints.length; i++) { ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h); }
+        for (let i = 1; i < routePoints.length; i++) {
+          ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
+        }
+        ctx.strokeStyle = 'rgba(0, 230, 118, 0.4)';
+        ctx.lineWidth = 6;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        // 延線中（NOW）黄色破線アニメーション
+        ctx.beginPath();
+        ctx.moveTo(routePoints[0].x * w, routePoints[0].y * h);
+        for (let i = 1; i < routePoints.length; i++) {
+          ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
+        }
         ctx.strokeStyle = '#ffd000';
         ctx.lineWidth = 4;
         ctx.setLineDash([10, 6]);
@@ -378,92 +414,241 @@
         ctx.setLineDash([]);
       }
 
-      if (editMode) {
-        routePoints.forEach((pt, idx) => {
-          ctx.fillStyle = '#ff5252';
-          ctx.beginPath(); ctx.arc(pt.x * w, pt.y * h, 6, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif';
-          ctx.fillText(idx + 1, pt.x * w - 3, pt.y * h - 8);
-        });
-      }
+      // 3. ポイント描画（名称付きピン）
+      routePoints.forEach((pt, idx) => {
+        const px = pt.x * w;
+        const py = pt.y * h;
+
+        // ピン本体
+        ctx.fillStyle = editMode ? '#ff5252' : '#00b0ff';
+        ctx.beginPath();
+        ctx.arc(px, py, editMode ? 8 : 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // ピン外枠
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // ポイント名称表示
+        ctx.font = '10px -apple-system, sans-serif';
+        const label = pt.name || `P${idx + 1}`;
+        const textWidth = ctx.measureText(label).width;
+
+        // 文字背景（見やすさ向上）
+        ctx.fillStyle = 'rgba(18, 24, 32, 0.85)';
+        ctx.fillRect(px - textWidth / 2 - 3, py - 18, textWidth + 6, 12);
+
+        // 文字
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, px, py - 9);
+      });
+
       ctx.restore();
     }
 
-    function anim() { dashOffset = (dashOffset + 0.4) % 16; render(); requestAnimationFrame(anim); }
+    function anim() {
+      dashOffset = (dashOffset + 0.4) % 16;
+      render();
+      requestAnimationFrame(anim);
+    }
 
-    let isDragging = false, startX = 0, startY = 0;
+    // タッチ・タップ操作
+    let isDragging = false;
+    let startX = 0, startY = 0;
+
     canvas.addEventListener('pointerdown', (e) => {
       const rect = canvas.getBoundingClientRect();
       const clickX = (e.clientX - rect.left - offset.x) / scale;
       const clickY = (e.clientY - rect.top - offset.y) / scale;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+
       if (editMode) {
-        routePoints.push({ x: clickX / container.clientWidth, y: clickY / container.clientHeight });
-        render(); return;
+        // 既存ポイントのタップ判定（半径16px以内なら編集/削除）
+        let hitIndex = -1;
+        for (let i = 0; i < routePoints.length; i++) {
+          const ptX = routePoints[i].x * w;
+          const ptY = routePoints[i].y * h;
+          const dist = Math.hypot(clickX - ptX, clickY - ptY);
+          if (dist < 16) {
+            hitIndex = i;
+            break;
+          }
+        }
+
+        if (hitIndex !== -1) {
+          // 既存ポイントタップ時：名称変更または削除
+          const currentName = routePoints[hitIndex].name || `P${hitIndex + 1}`;
+          const action = prompt(`ポイント【${currentName}】の操作\n新しい名称を入力するか、半角「D」で削除します:`, currentName);
+          if (action !== null) {
+            const trimmed = action.trim();
+            if (trimmed.toUpperCase() === 'D' || trimmed === '') {
+              routePoints.splice(hitIndex, 1); // 削除
+            } else {
+              routePoints[hitIndex].name = trimmed; // 名称更新
+            }
+            render();
+          }
+          return;
+        }
+
+        // 新規ポイント追加
+        const nextNum = routePoints.length + 1;
+        routePoints.push({
+          name: `P${nextNum}`,
+          x: clickX / w,
+          y: clickY / h
+        });
+        render();
+        return;
       }
-      isDragging = true; startX = e.clientX - offset.x; startY = e.clientY - offset.y;
+
+      // 通常表示時のドラッグ移動
+      isDragging = true;
+      startX = e.clientX - offset.x;
+      startY = e.clientY - offset.y;
     });
 
     canvas.addEventListener('pointermove', (e) => {
       if (!isDragging || editMode) return;
-      offset.x = e.clientX - startX; offset.y = e.clientY - startY; render();
+      offset.x = e.clientX - startX;
+      offset.y = e.clientY - startY;
+      render();
     });
+
     window.addEventListener('pointerup', () => { isDragging = false; });
 
-    document.getElementById('btn-edit-mode').addEventListener('click', (e) => {
-      editMode = !editMode; e.target.textContent = editMode ? '線引き編集: ON' : '線引き編集: OFF'; e.target.classList.toggle('active', editMode); render();
+    // 編集モード切替
+    const btnEditMode = document.getElementById('btn-edit-mode');
+    const editSubBar = document.getElementById('edit-sub-bar');
+    btnEditMode.addEventListener('click', (e) => {
+      editMode = !editMode;
+      e.target.textContent = editMode ? '線引き編集: ON' : '線引き編集: OFF';
+      e.target.classList.toggle('active', editMode);
+      editSubBar.classList.toggle('show', editMode);
+      render();
     });
 
-    document.getElementById('btn-reset-view').addEventListener('click', () => { offset = { x: 0, y: 0 }; scale = 1.0; render(); });
+    // 直前1点消去
+    document.getElementById('btn-undo-pt').addEventListener('click', () => {
+      if (routePoints.length > 0) {
+        routePoints.pop();
+        render();
+      }
+    });
+
+    // 全点消去
+    document.getElementById('btn-clear-pt').addEventListener('click', () => {
+      if (routePoints.length === 0) return;
+      if (confirm('すべてのルートポイントを消去しますか？')) {
+        routePoints = [];
+        render();
+      }
+    });
+
+    // 表示位置リセット
+    document.getElementById('btn-reset-view').addEventListener('click', () => {
+      offset = { x: 0, y: 0 };
+      scale = 1.0;
+      render();
+    });
+
+    // 画像読込
     const fileInput = document.getElementById('file-input');
     document.getElementById('btn-load-img').addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0]; if (!file) return;
-      const reader = new FileReader(); reader.onload = (event) => { const newImg = new Image(); newImg.onload = () => { img = newImg; render(); }; newImg.src = event.target.result; }; reader.readAsDataURL(file);
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const newImg = new Image();
+        newImg.onload = () => {
+          img = newImg;
+          render();
+        };
+        newImg.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
     });
 
+    // 進捗表示更新
     function updateProgressUI() {
       const activeIdx = cableOrder.findIndex(c => c.status === "active");
       const doneItems = cableOrder.filter(c => c.status === "done");
+      
       document.getElementById('done-count').textContent = doneItems.length;
       document.getElementById('total-count').textContent = cableOrder.length;
+
       if (activeIdx !== -1) {
         document.getElementById('now-cable').textContent = cableOrder[activeIdx].name;
         const nextCable = cableOrder[activeIdx + 1];
-        document.getElementById('next-cable').textContent = nextCable ? nextCable.name : "終了";
+        document.getElementById('next-cable').textContent = nextCable ? nextCable.name : "全延線終了";
       } else {
-        document.getElementById('now-cable').textContent = "完了"; document.getElementById('next-cable').textContent = "-";
+        document.getElementById('now-cable').textContent = "全完了";
+        document.getElementById('next-cable').textContent = "-";
       }
+
       document.querySelectorAll('.cable-circle').forEach(el => {
-        const id = el.getAttribute('data-id'); const c = cableOrder.find(item => item.id === id); el.className = 'cable-circle';
-        if (c) { if (c.status === 'done') el.classList.add('done'); if (c.status === 'active') el.classList.add('active'); }
-      });
-    }
-
-    document.getElementById('btn-next-step').addEventListener('click', () => {
-      const activeIdx = cableOrder.findIndex(c => c.status === "active");
-      if (activeIdx !== -1) { cableOrder[activeIdx].status = "done"; if (activeIdx + 1 < cableOrder.length) { cableOrder[activeIdx + 1].status = "active"; } updateProgressUI(); }
-    });
-
-    document.getElementById('btn-ai-send').addEventListener('click', parseAIInput);
-    document.getElementById('ai-text').addEventListener('keypress', (e) => { if (e.key === 'Enter') parseAIInput(); });
-
-    function parseAIInput() {
-      const input = document.getElementById('ai-text'); const val = input.value.trim(); if (!val) return;
-      cableOrder.forEach(c => {
-        if (val.includes(c.id) || val.includes(c.num + "番")) {
-          if (val.includes("完了")) { c.status = "done"; } else { cableOrder.forEach(x => { if (x.status === "active") x.status = "pending"; }); c.status = "active"; }
+        const id = el.getAttribute('data-id');
+        const c = cableOrder.find(item => item.id === id);
+        el.className = 'cable-circle';
+        if (c) {
+          if (c.status === 'done') el.classList.add('done');
+          if (c.status === 'active') el.classList.add('active');
         }
       });
-      input.value = ""; updateProgressUI();
     }
 
-    const panelToggle = document.getElementById('panel-toggle'), rackContent = document.getElementById('rack-view-content'), toggleIcon = document.getElementById('toggle-icon');
-    panelToggle.addEventListener('click', () => {
-      const isHidden = rackContent.style.display === 'none'; rackContent.style.display = isHidden ? 'flex' : 'none'; toggleIcon.textContent = isHidden ? '▲' : '▼';
+    // 次へ進むボタン
+    document.getElementById('btn-next-step').addEventListener('click', () => {
+      const activeIdx = cableOrder.findIndex(c => c.status === "active");
+      if (activeIdx !== -1) {
+        cableOrder[activeIdx].status = "done";
+        if (activeIdx + 1 < cableOrder.length) {
+          cableOrder[activeIdx + 1].status = "active";
+        }
+        updateProgressUI();
+      }
     });
 
-    resizeCanvas(); updateProgressUI(); anim();
+    // テキスト入力解釈
+    document.getElementById('btn-ai-send').addEventListener('click', parseInput);
+    document.getElementById('ai-text').addEventListener('keypress', (e) => { if (e.key === 'Enter') parseInput(); });
+
+    function parseInput() {
+      const input = document.getElementById('ai-text');
+      const val = input.value.trim();
+      if (!val) return;
+
+      cableOrder.forEach(c => {
+        if (val.includes(c.id) || val.includes(c.num + "番")) {
+          if (val.includes("完了")) {
+            c.status = "done";
+          } else {
+            cableOrder.forEach(x => { if (x.status === "active") x.status = "pending"; });
+            c.status = "active";
+          }
+        }
+      });
+      input.value = "";
+      updateProgressUI();
+    }
+
+    // パネル開閉
+    const panelToggle = document.getElementById('panel-toggle');
+    const rackContent = document.getElementById('rack-view-content');
+    const toggleIcon = document.getElementById('toggle-icon');
+    panelToggle.addEventListener('click', () => {
+      const isHidden = rackContent.style.display === 'none';
+      rackContent.style.display = isHidden ? 'flex' : 'none';
+      toggleIcon.textContent = isHidden ? '▲' : '▼';
+    });
+
+    resizeCanvas();
+    updateProgressUI();
+    anim();
   </script>
 </body>
 </html>
-
