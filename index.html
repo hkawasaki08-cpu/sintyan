@@ -6,8 +6,8 @@
   <title>進捗管理アプリ「進ちゃん」</title>
   <style>
     :root {
-      --bg-dark: #121820;
-      --card-bg: #1c2430;
+      --bg-dark: #10151d;
+      --card-bg: #1a222d;
       --accent-yellow: #ffd000;
       --accent-green: #00e676;
       --accent-blue: #00b0ff;
@@ -48,9 +48,9 @@
     .progress-count { text-align: right; font-size: 11px; color: var(--text-sub); }
     .progress-count span { font-size: 15px; color: var(--accent-green); font-weight: bold; }
 
-    /* ② 現在の作業ステータスカード（準備／延線中） */
+    /* ② タスク進捗カード */
     #task-card {
-      background: #18202c;
+      background: #151c26;
       padding: 8px 10px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
@@ -71,7 +71,7 @@
     }
     .dir-label { color: var(--accent-yellow); font-size: 10px; }
 
-    /* 準備4項目チェックリスト (iPhone SEでも押しやすい大型化) */
+    /* 準備4項目チェックリスト */
     .prep-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -97,30 +97,47 @@
     }
     .prep-item.checked {
       border-color: var(--accent-green);
-      background: rgba(0, 230, 118, 0.1);
+      background: rgba(0, 230, 118, 0.12);
     }
 
-    /* 延線通過ボタン */
-    .pulling-row {
+    /* 延線中「◀ 戻る」「次へ ▶」大型2ボタン */
+    .pulling-nav-box {
       display: none;
+      flex-direction: column;
       gap: 6px;
     }
-    .btn-inv {
+    .pulling-status-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+    .pulling-btn-row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-nav-prev {
       flex: 1;
       background: #263238;
       border: 1px solid var(--border-color);
-      color: #fff;
-      padding: 8px 4px;
-      border-radius: 6px;
-      font-size: 11px;
+      color: #cfd8dc;
+      padding: 12px 6px;
+      border-radius: 8px;
+      font-size: 13px;
       font-weight: bold;
-      text-align: center;
+      cursor: pointer;
     }
-    .btn-inv.passed {
+    .btn-nav-next {
+      flex: 2;
       background: var(--accent-yellow);
+      border: none;
       color: #000;
-      border-color: #fbc02d;
+      padding: 12px 6px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
     }
+    .btn-nav-next:active { background: #fbc02d; }
 
     /* ③ 図面領域 (Canvas) */
     #drawing-container {
@@ -145,7 +162,7 @@
       z-index: 10;
     }
     .ctrl-btn {
-      background: rgba(28, 36, 48, 0.9);
+      background: rgba(26, 34, 45, 0.9);
       border: 1px solid var(--border-color);
       color: var(--text-main);
       padding: 6px 10px;
@@ -172,7 +189,7 @@
     .edit-sub-bar.show { display: flex; }
     .edit-btn {
       flex: 1;
-      background: rgba(28, 36, 48, 0.95);
+      background: rgba(26, 34, 45, 0.95);
       border: 1px solid var(--border-color);
       color: #fff;
       padding: 8px 4px;
@@ -192,7 +209,7 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       color: var(--accent-yellow);
       border: 1px solid var(--accent-yellow);
       padding: 4px 8px;
@@ -202,6 +219,41 @@
       display: none;
       z-index: 10;
       pointer-events: none;
+    }
+
+    /* ピンタップ時の専用小窓メニュー（ダブルタップ廃止代替） */
+    #pin-menu-popup {
+      position: absolute;
+      background: #1c2430;
+      border: 1px solid var(--accent-yellow);
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: none;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      z-index: 25;
+      transform: translate(-50%, -125%);
+    }
+    .menu-pop-btn {
+      background: #2a3544;
+      border: 1px solid #455a64;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .menu-pop-btn.danger {
+      background: rgba(255, 82, 82, 0.2);
+      color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+    .menu-pop-btn.close {
+      background: transparent;
+      border: none;
+      color: #90a4ae;
+      font-size: 14px;
+      padding: 0 4px;
     }
 
     /* ④ ラック断面パネル (横並び2条) */
@@ -215,7 +267,7 @@
     }
     .panel-header {
       padding: 6px 10px;
-      background: #18202a;
+      background: #141b24;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -240,7 +292,7 @@
     }
     .tier-bar {
       flex: 1;
-      background: #0f141c;
+      background: #0d1219;
       border-bottom: 2px solid #546e7a;
       border-left: 2px solid #546e7a;
       border-right: 2px solid #546e7a;
@@ -291,7 +343,7 @@
 
     /* ⑤ フッター */
     footer {
-      background: #141a23;
+      background: #10151d;
       padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
       border-top: 1px solid var(--border-color);
       display: flex;
@@ -311,7 +363,7 @@
       cursor: pointer;
     }
     .btn-main-action:disabled {
-      background: #37474f;
+      background: #263238;
       color: #78909c;
     }
     .btn-main-action:active { background: #1b5e20; }
@@ -362,12 +414,16 @@
       </div>
     </div>
 
-    <!-- 延線中 INV通過ボタン群 -->
-    <div class="pulling-row" id="pulling-group">
-      <button class="btn-inv" id="btn-inv-1">INV1 通過</button>
-      <button class="btn-inv" id="btn-inv-2">INV2 通過</button>
-      <button class="btn-inv" id="btn-inv-3">INV3 通過</button>
-      <button class="btn-inv" id="btn-inv-4">終点到達</button>
+    <!-- 延線中 大型2ボタン -->
+    <div class="pulling-nav-box" id="pulling-group">
+      <div class="pulling-status-line">
+        <span>現在位置: <strong id="cur-pos-text" style="color:var(--accent-yellow);">ドラム</strong></span>
+        <span id="next-target-text" style="color:var(--accent-blue);">目標: 始点 通過</span>
+      </div>
+      <div class="pulling-btn-row">
+        <button class="btn-nav-prev" id="btn-nav-prev">◀ 戻る</button>
+        <button class="btn-nav-next" id="btn-nav-next">次へ: 始点 通過 ▷</button>
+      </div>
     </div>
   </div>
 
@@ -376,18 +432,25 @@
     <canvas id="planCanvas"></canvas>
     <div id="angle-badge">📐 0° (5°刻み)</div>
 
+    <!-- ピンタップ時の操作小窓メニュー -->
+    <div id="pin-menu-popup">
+      <button class="menu-pop-btn" id="pop-btn-rename">✏️ 名称変更</button>
+      <button class="menu-pop-btn danger" id="pop-btn-delete">🗑️ 削除</button>
+      <button class="menu-pop-btn close" id="pop-btn-close">✕</button>
+    </div>
+
     <div class="canvas-ctrls">
       <button class="ctrl-btn" id="btn-edit-mode">線引き編集: OFF</button>
       <button class="ctrl-btn" id="btn-load-img">図面読込</button>
       <input type="file" id="file-input" accept="image/*" style="display:none;">
-      <button class="ctrl-btn" id="btn-reset-view">位置戻す</button>
+      <button class="ctrl-btn" id="btn-fit-view">全体収容</button>
     </div>
 
     <!-- 編集サブメニュー -->
     <div class="edit-sub-bar" id="edit-sub-bar">
-      <button class="edit-btn" id="btn-add-mode">＋ 点を追加</button>
+      <button class="edit-btn" id="btn-add-mode">＋ 末尾に追加: OFF</button>
       <button class="edit-btn" id="btn-undo-pt">直前点消去</button>
-      <button class="edit-btn danger" id="btn-clear-pt">全点消去</button>
+      <button class="edit-btn danger" id="btn-clear-pt">全クリア...</button>
     </div>
   </div>
 
@@ -398,7 +461,6 @@
       <span id="toggle-icon">▲</span>
     </div>
     <div class="rack-view" id="rack-view-content">
-      <!-- 5段目 -->
       <div class="rack-tier">
         <div class="tier-label">5段目</div>
         <div class="tier-bar">
@@ -408,7 +470,6 @@
           <div class="cable-circle done" data-id="2BB"><span class="code">2BB</span>⑥</div>
         </div>
       </div>
-      <!-- 4段目 -->
       <div class="rack-tier">
         <div class="tier-label">4段目</div>
         <div class="tier-bar">
@@ -418,7 +479,6 @@
           <div class="cable-circle" data-id="2DB"><span class="code">2DB</span>⑬</div>
         </div>
       </div>
-      <!-- 3段目 -->
       <div class="rack-tier">
         <div class="tier-label">3段目</div>
         <div class="tier-bar">
@@ -428,7 +488,6 @@
           <div class="cable-circle" data-id="2FB"><span class="code">2FB</span>⑧</div>
         </div>
       </div>
-      <!-- 2段目 -->
       <div class="rack-tier">
         <div class="tier-label">2段目</div>
         <div class="tier-bar">
@@ -445,13 +504,13 @@
   </footer>
 
   <script>
-    // ケーブル台帳マスタ
+    // ケーブル台帳
     let cables = [
       { id: "2AA", num: 1, name: "2A-A (①)", status: "done" },
       { id: "2AB", num: 2, name: "2A-B (②)", status: "done" },
       { id: "2BA", num: 5, name: "2B-A (⑤)", status: "done" },
       { id: "2BB", num: 6, name: "2B-B (⑥)", status: "done" },
-      { id: "2FA", num: 7, name: "2F-A (⑦)", status: "active" }, // 現在作業中
+      { id: "2FA", num: 7, name: "2F-A (⑦)", status: "active" },
       { id: "2FB", num: 8, name: "2F-B (⑧)", status: "pending" },
       { id: "2CA", num: 9, name: "2C-A (⑨)", status: "pending" },
       { id: "2CB", num: 10, name: "2C-B (⑩)", status: "pending" },
@@ -461,24 +520,32 @@
 
     // ルートポイント (割合座標 0.0〜1.0)
     let routePoints = [
-      { name: "ドラム", x: 0.15, y: 0.12 },
-      { name: "INV1", x: 0.45, y: 0.12 },
-      { name: "東①", x: 0.65, y: 0.12 },
-      { name: "東⑪", x: 0.65, y: 0.70 },
+      { name: "ドラム", x: 0.12, y: 0.22 },
+      { name: "始点", x: 0.28, y: 0.22 },
+      { name: "INV1", x: 0.44, y: 0.22 },
+      { name: "東①", x: 0.64, y: 0.22 },
+      { name: "INV2", x: 0.64, y: 0.68 },
+      { name: "東⑪", x: 0.64, y: 0.82 },
       { name: "INV3", x: 0.38, y: 0.82 },
       { name: "終点", x: 0.12, y: 0.82 }
     ];
 
-    let currentPhase = "prep"; // "prep" (準備) | "pulling" (延線中)
+    let currentPhase = "prep"; // "prep" | "pulling"
     let prepChecks = [false, false, false, false];
-    let invPassedIndex = 0; // 延線の進行度 (0〜routePoints.length-1)
-    let dressingCables = []; // 整線中ケーブルリスト
+    let navSteps = []; // 通過対象のポイントインデックス
+    let currentStepIdx = 0; // navSteps上の現在位置
+    let isTailPassed = false; // ドラム抜け完了フラグ
+    let dressingCables = [];
 
     let editMode = false;
     let addMode = false;
     let draggedPtIdx = -1;
-    let lastTapTime = 0;
-    let lastTapPtIdx = -1;
+    let selectedMenuPtIdx = -1;
+    let isTouchMoved = false;
+
+    // 余白ダブルタップ判定用
+    let lastBgTapTime = 0;
+    let lastBgTapX = 0, lastBgTapY = 0;
 
     let img = null;
     let offset = { x: 0, y: 0 };
@@ -489,6 +556,7 @@
     const ctx = canvas.getContext('2d');
     const container = document.getElementById('drawing-container');
     const angleBadge = document.getElementById('angle-badge');
+    const pinMenu = document.getElementById('pin-menu-popup');
 
     function resizeCanvas() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -500,7 +568,14 @@
     }
     window.addEventListener('resize', resizeCanvas);
 
-    // 5°刻みスナップ計算関数
+    // 全体収容（オートフィット）
+    function fitToCenter() {
+      offset = { x: 0, y: 0 };
+      scale = 1.0;
+      render();
+    }
+
+    // 5°刻みスナップ計算
     function snapTo5Degrees(fromX, fromY, toX, toY) {
       const dx = toX - fromX;
       const dy = toY - fromY;
@@ -511,7 +586,6 @@
       let deg = rad * (180 / Math.PI);
       if (deg < 0) deg += 360;
 
-      // 5度刻みに丸め
       const snappedDeg = Math.round(deg / 5) * 5;
       const snappedRad = snappedDeg * (Math.PI / 180);
 
@@ -522,23 +596,18 @@
       };
     }
 
-    // 線分とタップ位置の距離（中間点挿入用）
+    // 線分と点の距離
     function getDistanceToSegment(p, p1, p2) {
       const dx = p2.x - p1.x;
       const dy = p2.y - p1.y;
       const lenSq = dx * dx + dy * dy;
-      if (lenSq === 0) return { dist: Math.hypot(p.x - p1.x, p.y - p1.y), t: 0 };
+      if (lenSq === 0) return { dist: Math.hypot(p.x - p1.x, p.y - p1.y), t: 0, projX: p1.x, projY: p1.y };
 
       let t = ((p.x - p1.x) * dx + (p.y - p1.y) * dy) / lenSq;
       t = Math.max(0, Math.min(1, t));
       const projX = p1.x + t * dx;
       const projY = p1.y + t * dy;
-      return {
-        dist: Math.hypot(p.x - projX, p.y - projY),
-        t: t,
-        projX: projX,
-        projY: projY
-      };
+      return { dist: Math.hypot(p.x - projX, p.y - projY), t, projX, projY };
     }
 
     // 描画メイン
@@ -555,12 +624,12 @@
       if (img) {
         ctx.drawImage(img, 0, 0, w, h);
       } else {
-        ctx.strokeStyle = '#263238';
+        ctx.strokeStyle = '#1e2836';
         for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
         for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
         ctx.fillStyle = '#546e7a';
         ctx.font = '11px sans-serif';
-        ctx.fillText('「図面読込」から現場の平面図写真を選択できます', 16, 36);
+        ctx.fillText('図面読込から写真選択、または余白をダブルタップで全体収容', 16, 36);
       }
 
       // 2. ルート描画
@@ -577,42 +646,70 @@
         ctx.lineJoin = 'round';
         ctx.stroke();
 
-        // 進行中の黄色ライン (INV通過度に合わせて前進)
-        const activeEndIdx = currentPhase === 'pulling' 
-          ? Math.min(invPassedIndex + 1, routePoints.length - 1)
-          : routePoints.length - 1;
+        // 進行中の黄色ライン
+        if (currentPhase === 'pulling' && navSteps.length > 0) {
+          const targetPtIdx = navSteps[currentStepIdx] !== undefined 
+            ? navSteps[currentStepIdx] 
+            : routePoints.length - 1;
 
-        ctx.beginPath();
-        ctx.moveTo(routePoints[0].x * w, routePoints[0].y * h);
-        for (let i = 1; i <= activeEndIdx; i++) {
-          ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
-        }
-        ctx.strokeStyle = '#ffd000';
-        ctx.lineWidth = 4;
-        ctx.setLineDash([10, 6]);
-        ctx.lineDashOffset = -dashOffset;
-        ctx.stroke();
-        ctx.setLineDash([]);
+          // 開始インデックス（ドラム抜け完了時は「始点」からスタート＝ドラム〜始点は緑のまま）
+          let startPtIdx = 0;
+          if (isTailPassed) {
+            const startNodeIdx = routePoints.findIndex(p => p.name && (p.name.includes("始点") || p.name.includes("入口")));
+            if (startNodeIdx > 0) startPtIdx = startNodeIdx;
+          }
 
-        // 引張方向矢印（▶ ▶ ▶）の描画
-        for (let i = 0; i < activeEndIdx; i++) {
-          const x1 = routePoints[i].x * w, y1 = routePoints[i].y * h;
-          const x2 = routePoints[i + 1].x * w, y2 = routePoints[i + 1].y * h;
-          const midX = (x1 + x2) / 2;
-          const midY = (y1 + y2) / 2;
-          const angle = Math.atan2(y2 - y1, x2 - x1);
+          // 次の目標へのはみ出し計算 (約38%先行)
+          let overshootPos = null;
+          if (!isTailPassed && currentStepIdx < navSteps.length - 1) {
+            const nextTargetIdx = navSteps[currentStepIdx + 1];
+            const pFrom = routePoints[targetPtIdx];
+            const pTo = routePoints[targetPtIdx + 1] || routePoints[nextTargetIdx];
+            if (pFrom && pTo) {
+              overshootPos = {
+                x: (pFrom.x + (pTo.x - pFrom.x) * 0.38) * w,
+                y: (pFrom.y + (pTo.y - pFrom.y) * 0.38) * h
+              };
+            }
+          }
 
-          ctx.save();
-          ctx.translate(midX, midY);
-          ctx.rotate(angle);
-          ctx.fillStyle = '#ffd000';
+          // 黄色ライン描画
           ctx.beginPath();
-          ctx.moveTo(-6, -4);
-          ctx.lineTo(6, 0);
-          ctx.lineTo(-6, 4);
-          ctx.closePath();
-          ctx.fill();
-          ctx.restore();
+          ctx.moveTo(routePoints[startPtIdx].x * w, routePoints[startPtIdx].y * h);
+          for (let i = startPtIdx + 1; i <= targetPtIdx; i++) {
+            ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
+          }
+          if (overshootPos) {
+            ctx.lineTo(overshootPos.x, overshootPos.y);
+          }
+
+          ctx.strokeStyle = '#ffd000';
+          ctx.lineWidth = 4;
+          ctx.setLineDash([10, 6]);
+          ctx.lineDashOffset = -dashOffset;
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // 進行矢印（▶ ▶ ▶）
+          for (let i = startPtIdx; i < targetPtIdx; i++) {
+            const x1 = routePoints[i].x * w, y1 = routePoints[i].y * h;
+            const x2 = routePoints[i + 1].x * w, y2 = routePoints[i + 1].y * h;
+            const midX = (x1 + x2) / 2;
+            const midY = (y1 + y2) / 2;
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+
+            ctx.save();
+            ctx.translate(midX, midY);
+            ctx.rotate(angle);
+            ctx.fillStyle = '#ffd000';
+            ctx.beginPath();
+            ctx.moveTo(-6, -4);
+            ctx.lineTo(6, 0);
+            ctx.lineTo(-6, 4);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          }
         }
       }
 
@@ -633,7 +730,7 @@
         ctx.font = '10px sans-serif';
         const label = pt.name || `P${idx + 1}`;
         const textWidth = ctx.measureText(label).width;
-        ctx.fillStyle = 'rgba(18, 24, 32, 0.85)';
+        ctx.fillStyle = 'rgba(16, 21, 29, 0.85)';
         ctx.fillRect(px - textWidth / 2 - 3, py - 18, textWidth + 6, 12);
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
@@ -641,6 +738,15 @@
       });
 
       ctx.restore();
+
+      // 小窓ポップアップの位置追従
+      if (selectedMenuPtIdx !== -1 && routePoints[selectedMenuPtIdx]) {
+        const pt = routePoints[selectedMenuPtIdx];
+        const screenX = (pt.x * w) * scale + offset.x;
+        const screenY = (pt.y * h) * scale + offset.y;
+        pinMenu.style.left = `${screenX}px`;
+        pinMenu.style.top = `${screenY}px`;
+      }
     }
 
     function anim() {
@@ -659,55 +765,37 @@
       const clickY = (e.clientY - rect.top - offset.y) / scale;
       const w = container.clientWidth;
       const h = container.clientHeight;
-      const nowTime = Date.now();
+      const now = Date.now();
+
+      isTouchMoved = false;
 
       if (editMode) {
-        // 1. ピンのタップ判定（半径18px）
+        // 1. ピンのタップ判定を最優先（半径28px）
         let hitIdx = -1;
         for (let i = 0; i < routePoints.length; i++) {
           const ptX = routePoints[i].x * w;
           const ptY = routePoints[i].y * h;
-          if (Math.hypot(clickX - ptX, clickY - ptY) < 18) {
+          if (Math.hypot(clickX - ptX, clickY - ptY) < 28) {
             hitIdx = i;
             break;
           }
         }
 
-        // ダブルタップ判定（名称変更／削除）
         if (hitIdx !== -1) {
-          if (lastTapPtIdx === hitIdx && (nowTime - lastTapTime) < 350) {
-            // ダブルタップ成立
-            const currentName = routePoints[hitIdx].name || `P${hitIdx + 1}`;
-            const action = prompt(`ポイント【${currentName}】の操作\n新しい名称を入力するか、半角「D」で削除します:`, currentName);
-            if (action !== null) {
-              const trimmed = action.trim();
-              if (trimmed.toUpperCase() === 'D' || trimmed === '') {
-                routePoints.splice(hitIdx, 1);
-              } else {
-                routePoints[hitIdx].name = trimmed;
-              }
-              render();
-            }
-            draggedPtIdx = -1;
-            lastTapPtIdx = -1;
-            return;
-          } else {
-            // 1回目のタップ ➔ ドラッグ移動準備
-            lastTapTime = nowTime;
-            lastTapPtIdx = hitIdx;
-            draggedPtIdx = hitIdx;
-            angleBadge.style.display = 'block';
-            return;
-          }
+          draggedPtIdx = hitIdx;
+          angleBadge.style.display = 'block';
+          render();
+          return;
         }
 
-        // 2. 中間点追加（既存の線分上をタップしたか判定）
-        if (routePoints.length >= 2) {
+        // 2. 中間点追加 (ピンから35px以上離れた線分上をタップした場合のみ)
+        let nearAnyPin = routePoints.some(pt => Math.hypot(clickX - pt.x * w, clickY - pt.y * h) < 35);
+        if (!nearAnyPin && routePoints.length >= 2) {
           for (let i = 0; i < routePoints.length - 1; i++) {
             const p1 = { x: routePoints[i].x * w, y: routePoints[i].y * h };
             const p2 = { x: routePoints[i + 1].x * w, y: routePoints[i + 1].y * h };
             const seg = getDistanceToSegment({ x: clickX, y: clickY }, p1, p2);
-            if (seg.dist < 14) { // 線から14px以内をタップ
+            if (seg.dist < 14) {
               const newPt = {
                 name: `P${i + 2}`,
                 x: seg.projX / w,
@@ -720,7 +808,7 @@
           }
         }
 
-        // 3. 新規点追加（＋点追加モード時のみ）
+        // 3. 末尾追加モード
         if (addMode) {
           let targetX = clickX;
           let targetY = clickY;
@@ -740,7 +828,19 @@
         }
       }
 
-      // 通常時：画面のパン移動
+      // 通常時：余白ダブルタップ判定（全体収容）
+      if (!editMode) {
+        if ((now - lastBgTapTime < 380) && Math.hypot(e.clientX - lastBgTapX, e.clientY - lastBgTapY) < 25) {
+          fitToCenter();
+          lastBgTapTime = 0;
+          return;
+        }
+        lastBgTapTime = now;
+        lastBgTapX = e.clientX;
+        lastBgTapY = e.clientY;
+      }
+
+      // 図面のパン移動開始
       isPanning = true;
       startX = e.clientX - offset.x;
       startY = e.clientY - offset.y;
@@ -753,13 +853,15 @@
       const w = container.clientWidth;
       const h = container.clientHeight;
 
-      // ピンのドラッグ移動（5°刻みスナップ）
+      // ピンのドラッグ移動 (5°刻みスナップ)
       if (draggedPtIdx !== -1) {
+        isTouchMoved = true;
+        closePinMenu();
+
         let newX = currentX;
         let newY = currentY;
         let deg = 0;
 
-        // 直前の点があればスナップ
         if (draggedPtIdx > 0) {
           const prev = routePoints[draggedPtIdx - 1];
           const snapped = snapTo5Degrees(prev.x * w, prev.y * h, currentX, currentY);
@@ -782,13 +884,54 @@
       }
     });
 
-    window.addEventListener('pointerup', () => {
+    window.addEventListener('pointerup', (e) => {
+      // ピンを動かさずにタップした場合 ➔ 小窓メニューを開く
       if (draggedPtIdx !== -1) {
+        if (!isTouchMoved) {
+          openPinMenu(draggedPtIdx);
+        }
         draggedPtIdx = -1;
         angleBadge.style.display = 'none';
         render();
       }
       isPanning = false;
+    });
+
+    // 小窓メニュー制御
+    function openPinMenu(idx) {
+      selectedMenuPtIdx = idx;
+      pinMenu.style.display = 'flex';
+      render();
+    }
+    function closePinMenu() {
+      selectedMenuPtIdx = -1;
+      pinMenu.style.display = 'none';
+    }
+
+    document.getElementById('pop-btn-close').addEventListener('click', closePinMenu);
+    document.getElementById('pop-btn-rename').addEventListener('click', () => {
+      if (selectedMenuPtIdx === -1) return;
+      const pt = routePoints[selectedMenuPtIdx];
+      const cur = pt.name || `P${selectedMenuPtIdx + 1}`;
+      const name = prompt(`ポイント名称を入力（空欄で連番に戻す）:`, cur);
+      if (name !== null) {
+        pt.name = name.trim();
+        rebuildNavSteps();
+        render();
+      }
+      closePinMenu();
+    });
+
+    document.getElementById('pop-btn-delete').addEventListener('click', () => {
+      if (selectedMenuPtIdx === -1) return;
+      const pt = routePoints[selectedMenuPtIdx];
+      const cur = pt.name || `P${selectedMenuPtIdx + 1}`;
+      if (confirm(`ポイント【${cur}】を削除しますか？`)) {
+        routePoints.splice(selectedMenuPtIdx, 1);
+        rebuildNavSteps();
+        render();
+      }
+      closePinMenu();
     });
 
     // 編集モードトグル
@@ -799,41 +942,43 @@
       btnEdit.textContent = editMode ? '線引き編集: ON' : '線引き編集: OFF';
       btnEdit.classList.toggle('active', editMode);
       subBar.classList.toggle('show', editMode);
-      if (!editMode) addMode = false;
+      if (!editMode) {
+        addMode = false;
+        closePinMenu();
+        rebuildNavSteps();
+      }
       render();
     });
 
-    // 点追加モード
+    // 末尾追加モード
     const btnAdd = document.getElementById('btn-add-mode');
     btnAdd.addEventListener('click', () => {
       addMode = !addMode;
       btnAdd.classList.toggle('active', addMode);
-      btnAdd.textContent = addMode ? '点追加: タップで設置' : '＋ 点を追加';
+      btnAdd.textContent = addMode ? '＋ 末尾に追加: ON' : '＋ 末尾に追加: OFF';
     });
 
     // 直前点消去
     document.getElementById('btn-undo-pt').addEventListener('click', () => {
       if (routePoints.length > 0) {
         routePoints.pop();
+        rebuildNavSteps();
         render();
       }
     });
 
-    // 全点消去 (2段階安全確認)
+    // 全クリア
     document.getElementById('btn-clear-pt').addEventListener('click', () => {
       if (routePoints.length === 0) return;
-      if (confirm('すべてのルートポイントを削除しますか？\n（この操作は元に戻せません）')) {
+      if (confirm('すべてのルートポイントを削除しますか？')) {
         routePoints = [];
+        rebuildNavSteps();
         render();
       }
     });
 
-    // 位置リセット
-    document.getElementById('btn-reset-view').addEventListener('click', () => {
-      offset = { x: 0, y: 0 };
-      scale = 1.0;
-      render();
-    });
+    // 全体収容ボタン
+    document.getElementById('btn-fit-view').addEventListener('click', fitToCenter);
 
     // 画像読込
     const fileInput = document.getElementById('file-input');
@@ -851,94 +996,143 @@
     });
 
     // ==========================================
-    // 準備 ➔ 延線 ➔ 整線（並行）進行ロジック
+    // 通過ステップ管理（名称付きポイントのみ対象）
     // ==========================================
-    const prepGroup = document.getElementById('prep-group');
-    const pullingGroup = document.getElementById('pulling-group');
-    const phaseLabel = document.getElementById('task-phase-label');
-    const mainBtn = document.getElementById('btn-main-action');
+    function rebuildNavSteps() {
+      navSteps = [];
+      routePoints.forEach((pt, idx) => {
+        // 自動連番(P1, P2...)または空文字はスルーし、現場固有の名称のみ抽出
+        const isAuto = !pt.name || /^P\d+$/i.test(pt.name.trim());
+        if (!isAuto) {
+          navSteps.push(idx);
+        }
+      });
+      if (navSteps.length === 0 && routePoints.length > 0) {
+        navSteps = routePoints.map((_, i) => i);
+      }
+      updateNavButtonsUI();
+    }
 
-    // 準備チェックボックス更新
+    // 準備4項目チェック
     document.querySelectorAll('.prep-item').forEach(item => {
       item.addEventListener('click', () => {
         const idx = parseInt(item.getAttribute('data-idx'));
         prepChecks[idx] = !prepChecks[idx];
-        const cb = item.querySelector('input');
-        cb.checked = prepChecks[idx];
+        item.querySelector('input').checked = prepChecks[idx];
         item.classList.toggle('checked', prepChecks[idx]);
-        updatePrepState();
-      });
-    });
 
-    function updatePrepState() {
-      const checkedCount = prepChecks.filter(Boolean).length;
-      const btn = document.getElementById('btn-main-step');
-      if (checkedCount === 4) {
-        btn.disabled = false;
-        btn.textContent = '延線準備完了 ▷ 開始 (GO)';
-      } else {
-        btn.disabled = true;
-        btn.textContent = `準備項目を確認してください (${checkedCount}/4)`;
-      }
-    }
-
-    // メイン進行ボタン (準備完了 ➔ 延線開始)
-    document.getElementById('btn-main-step').addEventListener('click', () => {
-      if (currentPhase === 'prep') {
-        currentPhase = 'pulling';
-        phaseLabel.textContent = '延線中';
-        phaseLabel.style.background = '#ffd000';
-        phaseLabel.style.color = '#000';
-        prepGroup.style.display = 'none';
-        pullingGroup.style.display = 'flex';
-        invPassedIndex = 0;
-        updatePullingButtons();
-        document.getElementById('btn-main-step').style.display = 'none';
-        render();
-      }
-    });
-
-    // INV通過ボタン制御
-    const invBtns = [
-      document.getElementById('btn-inv-1'),
-      document.getElementById('btn-inv-2'),
-      document.getElementById('btn-inv-3'),
-      document.getElementById('btn-inv-4')
-    ];
-
-    invBtns.forEach((btn, idx) => {
-      btn.addEventListener('click', () => {
-        invPassedIndex = idx;
-        updatePullingButtons();
-        render();
-
-        // 終点到達時 ➔ 延線完了＆整線（並行）へ
-        if (idx === 3) {
-          completePullingAndShiftNext();
+        const count = prepChecks.filter(Boolean).length;
+        const mainBtn = document.getElementById('btn-main-step');
+        if (count === 4) {
+          mainBtn.disabled = false;
+          mainBtn.textContent = '延線準備完了 ▷ 開始 (GO)';
+        } else {
+          mainBtn.disabled = true;
+          mainBtn.textContent = `準備項目を確認してください (${count}/4)`;
         }
       });
     });
 
-    function updatePullingButtons() {
-      invBtns.forEach((btn, i) => {
-        btn.classList.toggle('passed', i <= invPassedIndex);
-      });
+    // 延線開始
+    document.getElementById('btn-main-step').addEventListener('click', () => {
+      currentPhase = 'pulling';
+      document.getElementById('task-phase-label').textContent = '延線中 (引張進行)';
+      document.getElementById('task-phase-label').style.background = '#00897b';
+      document.getElementById('prep-group').style.display = 'none';
+      document.getElementById('pulling-group').style.display = 'flex';
+      document.getElementById('btn-main-step').style.display = 'none';
+
+      rebuildNavSteps();
+      currentStepIdx = 0;
+      isTailPassed = false;
+      updateNavButtonsUI();
+      render();
+    });
+
+    // 「◀ 戻る」「次へ ▶」ボタン処理
+    const btnPrev = document.getElementById('btn-nav-prev');
+    const btnNext = document.getElementById('btn-nav-next');
+    const curPosText = document.getElementById('cur-pos-text');
+    const nextTargetText = document.getElementById('next-target-text');
+
+    btnNext.addEventListener('click', () => {
+      // 終点到達後の「ドラム抜け・始点到達（延線完了）」ステップ
+      if (currentStepIdx === navSteps.length - 1 && !isTailPassed) {
+        isTailPassed = true;
+        updateNavButtonsUI();
+        render();
+        return;
+      }
+
+      // 完全完了 ➔ 整線（並行稼働）へ移行
+      if (isTailPassed) {
+        completePullingAndShiftNext();
+        return;
+      }
+
+      if (currentStepIdx < navSteps.length - 1) {
+        currentStepIdx++;
+        updateNavButtonsUI();
+        render();
+      }
+    });
+
+    btnPrev.addEventListener('click', () => {
+      if (isTailPassed) {
+        isTailPassed = false;
+        updateNavButtonsUI();
+        render();
+        return;
+      }
+      if (currentStepIdx > 0) {
+        currentStepIdx--;
+        updateNavButtonsUI();
+        render();
+      }
+    });
+
+    function updateNavButtonsUI() {
+      if (navSteps.length === 0) return;
+
+      const curPt = routePoints[navSteps[currentStepIdx]];
+      const curName = curPt ? curPt.name : "-";
+      curPosText.textContent = curName;
+
+      // 終点に達している場合
+      if (currentStepIdx >= navSteps.length - 1) {
+        if (!isTailPassed) {
+          nextTargetText.textContent = "目標: ドラム抜け・始点到達";
+          btnNext.textContent = "次へ: ドラム抜け・始点到達 ▷";
+          btnNext.style.background = "#ffd000";
+        } else {
+          curPosText.textContent = "ドラム抜け・始点到達 (余丁確保)";
+          nextTargetText.textContent = "全通過完了";
+          btnNext.textContent = "延線完了 (整線へ送る) ▷";
+          btnNext.style.background = "#ffd000";
+        }
+      } else {
+        const nextPt = routePoints[navSteps[currentStepIdx + 1]];
+        const nextName = nextPt ? nextPt.name : "-";
+        nextTargetText.textContent = `目標: ${nextName} 通過`;
+        btnNext.textContent = `次へ: ${nextName} 通過 ▷`;
+        btnNext.style.background = "#ffd000";
+      }
+
+      btnPrev.disabled = (currentStepIdx === 0 && !isTailPassed);
     }
 
-    // 延線完了 ➔ 次ケーブル準備へ（整線は並行稼働）
+    // 延線完了 ➔ 次ケーブル準備へ
     function completePullingAndShiftNext() {
       const activeIdx = cables.findIndex(c => c.status === 'active');
       if (activeIdx !== -1) {
-        // 現在ケーブルを整線中へ
         cables[activeIdx].status = 'dressing';
         dressingCables.push(cables[activeIdx].name);
 
-        // 次ケーブルをアクティブ（準備フェーズ）へ
         if (activeIdx + 1 < cables.length) {
           cables[activeIdx + 1].status = 'active';
         }
 
-        // 状態リセット
+        // 初期化して準備フェーズへ
         currentPhase = 'prep';
         prepChecks = [false, false, false, false];
         document.querySelectorAll('.prep-item').forEach(el => {
@@ -946,13 +1140,16 @@
           el.querySelector('input').checked = false;
         });
 
-        phaseLabel.textContent = '延線準備中';
-        phaseLabel.style.background = '#e65100';
-        phaseLabel.style.color = '#fff';
-        prepGroup.style.display = 'grid';
-        pullingGroup.style.display = 'none';
-        document.getElementById('btn-main-step').style.display = 'block';
-        updatePrepState();
+        document.getElementById('task-phase-label').textContent = '延線準備中';
+        document.getElementById('task-phase-label').style.background = '#e65100';
+        document.getElementById('prep-group').style.display = 'grid';
+        document.getElementById('pulling-group').style.display = 'none';
+
+        const mainBtn = document.getElementById('btn-main-step');
+        mainBtn.style.display = 'block';
+        mainBtn.disabled = true;
+        mainBtn.textContent = '準備項目を確認してください (0/4)';
+
         updateUI();
         render();
       }
@@ -974,7 +1171,6 @@
         document.getElementById('next-cable').textContent = nextCable ? nextCable.name : '全線完了';
       }
 
-      // 断面丸印の更新
       document.querySelectorAll('.cable-circle').forEach(el => {
         const id = el.getAttribute('data-id');
         const c = cables.find(item => item.id === id);
@@ -998,7 +1194,7 @@
 
     // 初期化
     resizeCanvas();
-    updatePrepState();
+    rebuildNavSteps();
     updateUI();
     anim();
   </script>
