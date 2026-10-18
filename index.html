@@ -15,7 +15,7 @@
       --text-main: #ffffff;
       --text-sub: #90a4ae;
       --border-color: #37474f;
-      --header-height: 48px;
+      --header-height: 44px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -48,7 +48,81 @@
     .progress-count { text-align: right; font-size: 11px; color: var(--text-sub); }
     .progress-count span { font-size: 15px; color: var(--accent-green); font-weight: bold; }
 
-    /* ② メイン図面領域 */
+    /* ② 現在の作業ステータスカード（準備／延線中） */
+    #task-card {
+      background: #18202c;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .task-badge-label {
+      background: #e65100;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .dir-label { color: var(--accent-yellow); font-size: 10px; }
+
+    /* 準備4項目チェックリスト (iPhone SEでも押しやすい大型化) */
+    .prep-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .prep-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .prep-item input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent-green);
+      pointer-events: none;
+    }
+    .prep-item.checked {
+      border-color: var(--accent-green);
+      background: rgba(0, 230, 118, 0.1);
+    }
+
+    /* 延線通過ボタン */
+    .pulling-row {
+      display: none;
+      gap: 6px;
+    }
+    .btn-inv {
+      flex: 1;
+      background: #263238;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 8px 4px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .btn-inv.passed {
+      background: var(--accent-yellow);
+      color: #000;
+      border-color: #fbc02d;
+    }
+
+    /* ③ 図面領域 (Canvas) */
     #drawing-container {
       flex: 1;
       position: relative;
@@ -67,15 +141,15 @@
       right: 8px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
       z-index: 10;
     }
     .ctrl-btn {
       background: rgba(28, 36, 48, 0.9);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 5px 8px;
-      border-radius: 5px;
+      padding: 6px 10px;
+      border-radius: 6px;
       font-size: 11px;
       backdrop-filter: blur(4px);
     }
@@ -84,6 +158,8 @@
       color: #000;
       font-weight: bold;
     }
+
+    /* 編集補助バー */
     .edit-sub-bar {
       position: absolute;
       bottom: 8px;
@@ -96,22 +172,44 @@
     .edit-sub-bar.show { display: flex; }
     .edit-btn {
       flex: 1;
-      background: rgba(28, 36, 48, 0.9);
+      background: rgba(28, 36, 48, 0.95);
       border: 1px solid var(--border-color);
       color: #fff;
-      padding: 6px;
-      border-radius: 5px;
+      padding: 8px 4px;
+      border-radius: 6px;
       font-size: 11px;
       text-align: center;
     }
-    .edit-btn.danger { color: var(--accent-red); border-color: rgba(255, 82, 82, 0.5); }
+    .edit-btn.active {
+      background: var(--accent-yellow);
+      color: #000;
+      font-weight: bold;
+    }
+    .edit-btn.danger { color: var(--accent-red); }
 
-    /* ③ ラック断面パネル */
+    /* 角度ガイドバッジ */
+    #angle-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--accent-yellow);
+      border: 1px solid var(--accent-yellow);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      display: none;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* ④ ラック断面パネル (横並び2条) */
     #section-panel {
       background: var(--card-bg);
       border-top: 1px solid var(--border-color);
       flex-shrink: 0;
-      max-height: 34vh;
+      max-height: 32vh;
       display: flex;
       flex-direction: column;
     }
@@ -148,7 +246,7 @@
       border-right: 2px solid #546e7a;
       padding: 2px 4px;
       display: flex;
-      gap: 5px;
+      gap: 8px;
       min-height: 28px;
       align-items: center;
     }
@@ -191,7 +289,7 @@
       100% { transform: scale(1.05); box-shadow: 0 0 6px var(--accent-yellow); }
     }
 
-    /* ④ フッター */
+    /* ⑤ フッター */
     footer {
       background: #141a23;
       padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
@@ -201,36 +299,22 @@
       gap: 5px;
       flex-shrink: 0;
     }
-    .btn-step {
+    .btn-main-action {
       width: 100%;
       background: #2e7d32;
       border: none;
       color: white;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
     }
-    .btn-step:active { background: #1b5e20; }
-    .ai-input-box { display: flex; gap: 5px; }
-    .ai-input {
-      flex: 1;
-      background: #1c2430;
-      border: 1px solid var(--border-color);
-      color: white;
-      padding: 6px 8px;
-      border-radius: 5px;
-      font-size: 11px;
-    }
-    .btn-send {
+    .btn-main-action:disabled {
       background: #37474f;
-      border: none;
-      color: white;
-      padding: 0 10px;
-      border-radius: 5px;
-      font-size: 11px;
+      color: #78909c;
     }
+    .btn-main-action:active { background: #1b5e20; }
   </style>
 </head>
 <body>
@@ -239,21 +323,59 @@
   <header>
     <div class="status-badge">
       <div class="badge-box badge-now">
-        NOW: <strong id="now-cable">2BA (⑤)</strong>
+        NOW: <strong id="now-cable">2F-A (⑦)</strong>
       </div>
       <div class="badge-box badge-next">
-        NEXT: <strong id="next-cable">2BB (⑥)</strong>
+        NEXT: <strong id="next-cable">2F-B (⑧)</strong>
       </div>
     </div>
     <div class="progress-count">
-      進捗: <span id="done-count">2</span> / <span id="total-count">10</span> 本
+      完了: <span id="done-count">4</span> / <span id="total-count">14</span> 本
+      <span style="font-size:9px; color:var(--accent-yellow); display:block;" id="dressing-badge">整線中: 0本</span>
     </div>
   </header>
 
-  <!-- ② 図面キャンバス -->
+  <!-- ② タスク進捗カード -->
+  <div id="task-card">
+    <div class="task-header">
+      <span class="task-badge-label" id="task-phase-label">延線準備中</span>
+      <span class="dir-label">引張方向: ドラム ➔ 南ST</span>
+    </div>
+
+    <!-- 準備チェックリスト4項目 -->
+    <div class="prep-grid" id="prep-group">
+      <div class="prep-item" data-idx="0">
+        <input type="checkbox" id="p-0">
+        <label for="p-0">1. ドラムセット</label>
+      </div>
+      <div class="prep-item" data-idx="1">
+        <input type="checkbox" id="p-1">
+        <label for="p-1">2. 延線ロープ通線</label>
+      </div>
+      <div class="prep-item" data-idx="2">
+        <input type="checkbox" id="p-2">
+        <label for="p-2">3. タグ呼称確認 (<span id="tag-name">2F-A⑦</span>)</label>
+      </div>
+      <div class="prep-item" data-idx="3">
+        <input type="checkbox" id="p-3">
+        <label for="p-3">4. ケーブルヘッド準備</label>
+      </div>
+    </div>
+
+    <!-- 延線中 INV通過ボタン群 -->
+    <div class="pulling-row" id="pulling-group">
+      <button class="btn-inv" id="btn-inv-1">INV1 通過</button>
+      <button class="btn-inv" id="btn-inv-2">INV2 通過</button>
+      <button class="btn-inv" id="btn-inv-3">INV3 通過</button>
+      <button class="btn-inv" id="btn-inv-4">終点到達</button>
+    </div>
+  </div>
+
+  <!-- ③ 図面キャンバス -->
   <div id="drawing-container">
     <canvas id="planCanvas"></canvas>
-    
+    <div id="angle-badge">📐 0° (5°刻み)</div>
+
     <div class="canvas-ctrls">
       <button class="ctrl-btn" id="btn-edit-mode">線引き編集: OFF</button>
       <button class="ctrl-btn" id="btn-load-img">図面読込</button>
@@ -261,29 +383,32 @@
       <button class="ctrl-btn" id="btn-reset-view">位置戻す</button>
     </div>
 
-    <!-- 編集モード中のみ表示する補助バー -->
+    <!-- 編集サブメニュー -->
     <div class="edit-sub-bar" id="edit-sub-bar">
-      <button class="edit-btn" id="btn-undo-pt">直前1点消去</button>
+      <button class="edit-btn" id="btn-add-mode">＋ 点を追加</button>
+      <button class="edit-btn" id="btn-undo-pt">直前点消去</button>
       <button class="edit-btn danger" id="btn-clear-pt">全点消去</button>
     </div>
   </div>
 
-  <!-- ③ ラック断面ビュー -->
+  <!-- ④ ラック断面ビュー (横並び2条) -->
   <div id="section-panel">
     <div class="panel-header" id="panel-toggle">
-      <span>📐 東スタンション 断面並び (タップで開閉)</span>
+      <span>📐 東スタンション 断面並び (横並び2条)</span>
       <span id="toggle-icon">▲</span>
     </div>
     <div class="rack-view" id="rack-view-content">
+      <!-- 5段目 -->
       <div class="rack-tier">
         <div class="tier-label">5段目</div>
         <div class="tier-bar">
           <div class="cable-circle done" data-id="2AA"><span class="code">2AA</span>①</div>
           <div class="cable-circle done" data-id="2AB"><span class="code">2AB</span>②</div>
-          <div class="cable-circle active" data-id="2BA"><span class="code">2BA</span>⑤</div>
-          <div class="cable-circle" data-id="2BB"><span class="code">2BB</span>⑥</div>
+          <div class="cable-circle done" data-id="2BA"><span class="code">2BA</span>⑤</div>
+          <div class="cable-circle done" data-id="2BB"><span class="code">2BB</span>⑥</div>
         </div>
       </div>
+      <!-- 4段目 -->
       <div class="rack-tier">
         <div class="tier-label">4段目</div>
         <div class="tier-bar">
@@ -293,15 +418,17 @@
           <div class="cable-circle" data-id="2DB"><span class="code">2DB</span>⑬</div>
         </div>
       </div>
+      <!-- 3段目 -->
       <div class="rack-tier">
         <div class="tier-label">3段目</div>
         <div class="tier-bar">
           <div class="cable-circle" data-id="2EA"><span class="code">2EA</span>⑪</div>
           <div class="cable-circle" data-id="2EB"><span class="code">2EB</span>⑫</div>
-          <div class="cable-circle" data-id="2FA"><span class="code">2FA</span>⑦</div>
+          <div class="cable-circle active" data-id="2FA"><span class="code">2FA</span>⑦</div>
           <div class="cable-circle" data-id="2FB"><span class="code">2FB</span>⑧</div>
         </div>
       </div>
+      <!-- 2段目 -->
       <div class="rack-tier">
         <div class="tier-label">2段目</div>
         <div class="tier-bar">
@@ -312,40 +439,47 @@
     </div>
   </div>
 
-  <!-- ④ 操作フッター -->
+  <!-- ⑤ メイン操作フッター -->
   <footer>
-    <button class="btn-step" id="btn-next-step">完了 ▷ 次のケーブルへ</button>
-    <div class="ai-input-box">
-      <input type="text" class="ai-input" id="ai-text" placeholder="例: 「5番完了」「2CA開始」">
-      <button class="btn-send" id="btn-ai-send">入力</button>
-    </div>
+    <button class="btn-main-action" id="btn-main-step" disabled>準備項目を確認してください (0/4)</button>
   </footer>
 
   <script>
-    // ケーブル順序マスタ
-    const cableOrder = [
-      { id: "2AA", num: 1, name: "2AA (①)", status: "done" },
-      { id: "2AB", num: 2, name: "2AB (②)", status: "done" },
-      { id: "2BA", num: 5, name: "2BA (⑤)", status: "active" },
-      { id: "2BB", num: 6, name: "2BB (⑥)", status: "pending" },
-      { id: "2FA", num: 7, name: "2FA (⑦)", status: "pending" },
-      { id: "2FB", num: 8, name: "2FB (⑧)", status: "pending" },
-      { id: "2CA", num: 9, name: "2CA (⑨)", status: "pending" },
-      { id: "2CB", num: 10, name: "2CB (⑩)", status: "pending" },
-      { id: "2EA", num: 11, name: "2EA (⑪)", status: "pending" },
-      { id: "2EB", num: 12, name: "2EB (⑫)", status: "pending" }
+    // ケーブル台帳マスタ
+    let cables = [
+      { id: "2AA", num: 1, name: "2A-A (①)", status: "done" },
+      { id: "2AB", num: 2, name: "2A-B (②)", status: "done" },
+      { id: "2BA", num: 5, name: "2B-A (⑤)", status: "done" },
+      { id: "2BB", num: 6, name: "2B-B (⑥)", status: "done" },
+      { id: "2FA", num: 7, name: "2F-A (⑦)", status: "active" }, // 現在作業中
+      { id: "2FB", num: 8, name: "2F-B (⑧)", status: "pending" },
+      { id: "2CA", num: 9, name: "2C-A (⑨)", status: "pending" },
+      { id: "2CB", num: 10, name: "2C-B (⑩)", status: "pending" },
+      { id: "2EA", num: 11, name: "2E-A (⑪)", status: "pending" },
+      { id: "2EB", num: 12, name: "2E-B (⑫)", status: "pending" }
     ];
 
-    // ポイントデータ（名称付き）
+    // ルートポイント (割合座標 0.0〜1.0)
     let routePoints = [
-      { name: "ドラム", x: 0.22, y: 0.12 },
-      { name: "INV口", x: 0.52, y: 0.12 },
-      { name: "東①", x: 0.69, y: 0.14 },
-      { name: "東⑪", x: 0.69, y: 0.75 },
-      { name: "南スタンション", x: 0.20, y: 0.86 }
+      { name: "ドラム", x: 0.15, y: 0.12 },
+      { name: "INV1", x: 0.45, y: 0.12 },
+      { name: "東①", x: 0.65, y: 0.12 },
+      { name: "東⑪", x: 0.65, y: 0.70 },
+      { name: "INV3", x: 0.38, y: 0.82 },
+      { name: "終点", x: 0.12, y: 0.82 }
     ];
+
+    let currentPhase = "prep"; // "prep" (準備) | "pulling" (延線中)
+    let prepChecks = [false, false, false, false];
+    let invPassedIndex = 0; // 延線の進行度 (0〜routePoints.length-1)
+    let dressingCables = []; // 整線中ケーブルリスト
 
     let editMode = false;
+    let addMode = false;
+    let draggedPtIdx = -1;
+    let lastTapTime = 0;
+    let lastTapPtIdx = -1;
+
     let img = null;
     let offset = { x: 0, y: 0 };
     let scale = 1.0;
@@ -354,6 +488,7 @@
     const canvas = document.getElementById('planCanvas');
     const ctx = canvas.getContext('2d');
     const container = document.getElementById('drawing-container');
+    const angleBadge = document.getElementById('angle-badge');
 
     function resizeCanvas() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -365,6 +500,48 @@
     }
     window.addEventListener('resize', resizeCanvas);
 
+    // 5°刻みスナップ計算関数
+    function snapTo5Degrees(fromX, fromY, toX, toY) {
+      const dx = toX - fromX;
+      const dy = toY - fromY;
+      const dist = Math.hypot(dx, dy);
+      if (dist === 0) return { x: toX, y: toY, deg: 0 };
+
+      let rad = Math.atan2(dy, dx);
+      let deg = rad * (180 / Math.PI);
+      if (deg < 0) deg += 360;
+
+      // 5度刻みに丸め
+      const snappedDeg = Math.round(deg / 5) * 5;
+      const snappedRad = snappedDeg * (Math.PI / 180);
+
+      return {
+        x: fromX + dist * Math.cos(snappedRad),
+        y: fromY + dist * Math.sin(snappedRad),
+        deg: snappedDeg % 360
+      };
+    }
+
+    // 線分とタップ位置の距離（中間点挿入用）
+    function getDistanceToSegment(p, p1, p2) {
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+      const lenSq = dx * dx + dy * dy;
+      if (lenSq === 0) return { dist: Math.hypot(p.x - p1.x, p.y - p1.y), t: 0 };
+
+      let t = ((p.x - p1.x) * dx + (p.y - p1.y) * dy) / lenSq;
+      t = Math.max(0, Math.min(1, t));
+      const projX = p1.x + t * dx;
+      const projY = p1.y + t * dy;
+      return {
+        dist: Math.hypot(p.x - projX, p.y - projY),
+        t: t,
+        projX: projX,
+        projY: projY
+      };
+    }
+
+    // 描画メイン
     function render() {
       const w = container.clientWidth;
       const h = container.clientHeight;
@@ -383,12 +560,12 @@
         for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
         ctx.fillStyle = '#546e7a';
         ctx.font = '11px sans-serif';
-        ctx.fillText('図面読込ボタンから現場写真（平面図）を選択', 16, 36);
+        ctx.fillText('「図面読込」から現場の平面図写真を選択できます', 16, 36);
       }
 
       // 2. ルート描画
       if (routePoints.length > 1) {
-        // 下地（緑実線）
+        // 下地 (緑の完了ライン)
         ctx.beginPath();
         ctx.moveTo(routePoints[0].x * w, routePoints[0].y * h);
         for (let i = 1; i < routePoints.length; i++) {
@@ -400,10 +577,14 @@
         ctx.lineJoin = 'round';
         ctx.stroke();
 
-        // 延線中（NOW）黄色破線アニメーション
+        // 進行中の黄色ライン (INV通過度に合わせて前進)
+        const activeEndIdx = currentPhase === 'pulling' 
+          ? Math.min(invPassedIndex + 1, routePoints.length - 1)
+          : routePoints.length - 1;
+
         ctx.beginPath();
         ctx.moveTo(routePoints[0].x * w, routePoints[0].y * h);
-        for (let i = 1; i < routePoints.length; i++) {
+        for (let i = 1; i <= activeEndIdx; i++) {
           ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
         }
         ctx.strokeStyle = '#ffd000';
@@ -412,34 +593,48 @@
         ctx.lineDashOffset = -dashOffset;
         ctx.stroke();
         ctx.setLineDash([]);
+
+        // 引張方向矢印（▶ ▶ ▶）の描画
+        for (let i = 0; i < activeEndIdx; i++) {
+          const x1 = routePoints[i].x * w, y1 = routePoints[i].y * h;
+          const x2 = routePoints[i + 1].x * w, y2 = routePoints[i + 1].y * h;
+          const midX = (x1 + x2) / 2;
+          const midY = (y1 + y2) / 2;
+          const angle = Math.atan2(y2 - y1, x2 - x1);
+
+          ctx.save();
+          ctx.translate(midX, midY);
+          ctx.rotate(angle);
+          ctx.fillStyle = '#ffd000';
+          ctx.beginPath();
+          ctx.moveTo(-6, -4);
+          ctx.lineTo(6, 0);
+          ctx.lineTo(-6, 4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
       }
 
-      // 3. ポイント描画（名称付きピン）
+      // 3. ポイント描画 (名称付きピン)
       routePoints.forEach((pt, idx) => {
         const px = pt.x * w;
         const py = pt.y * h;
+        const isDragging = (idx === draggedPtIdx);
 
-        // ピン本体
-        ctx.fillStyle = editMode ? '#ff5252' : '#00b0ff';
+        ctx.fillStyle = isDragging ? '#ffd000' : (editMode ? '#ff5252' : '#00b0ff');
         ctx.beginPath();
-        ctx.arc(px, py, editMode ? 8 : 4, 0, Math.PI * 2);
+        ctx.arc(px, py, isDragging ? 10 : (editMode ? 8 : 4), 0, Math.PI * 2);
         ctx.fill();
-
-        // ピン外枠
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // ポイント名称表示
-        ctx.font = '10px -apple-system, sans-serif';
+        ctx.font = '10px sans-serif';
         const label = pt.name || `P${idx + 1}`;
         const textWidth = ctx.measureText(label).width;
-
-        // 文字背景（見やすさ向上）
         ctx.fillStyle = 'rgba(18, 24, 32, 0.85)';
         ctx.fillRect(px - textWidth / 2 - 3, py - 18, textWidth + 6, 12);
-
-        // 文字
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
         ctx.fillText(label, px, py - 9);
@@ -454,8 +649,8 @@
       requestAnimationFrame(anim);
     }
 
-    // タッチ・タップ操作
-    let isDragging = false;
+    // タッチ＆操作制御
+    let isPanning = false;
     let startX = 0, startY = 0;
 
     canvas.addEventListener('pointerdown', (e) => {
@@ -464,74 +659,159 @@
       const clickY = (e.clientY - rect.top - offset.y) / scale;
       const w = container.clientWidth;
       const h = container.clientHeight;
+      const nowTime = Date.now();
 
       if (editMode) {
-        // 既存ポイントのタップ判定（半径16px以内なら編集/削除）
-        let hitIndex = -1;
+        // 1. ピンのタップ判定（半径18px）
+        let hitIdx = -1;
         for (let i = 0; i < routePoints.length; i++) {
           const ptX = routePoints[i].x * w;
           const ptY = routePoints[i].y * h;
-          const dist = Math.hypot(clickX - ptX, clickY - ptY);
-          if (dist < 16) {
-            hitIndex = i;
+          if (Math.hypot(clickX - ptX, clickY - ptY) < 18) {
+            hitIdx = i;
             break;
           }
         }
 
-        if (hitIndex !== -1) {
-          // 既存ポイントタップ時：名称変更または削除
-          const currentName = routePoints[hitIndex].name || `P${hitIndex + 1}`;
-          const action = prompt(`ポイント【${currentName}】の操作\n新しい名称を入力するか、半角「D」で削除します:`, currentName);
-          if (action !== null) {
-            const trimmed = action.trim();
-            if (trimmed.toUpperCase() === 'D' || trimmed === '') {
-              routePoints.splice(hitIndex, 1); // 削除
-            } else {
-              routePoints[hitIndex].name = trimmed; // 名称更新
+        // ダブルタップ判定（名称変更／削除）
+        if (hitIdx !== -1) {
+          if (lastTapPtIdx === hitIdx && (nowTime - lastTapTime) < 350) {
+            // ダブルタップ成立
+            const currentName = routePoints[hitIdx].name || `P${hitIdx + 1}`;
+            const action = prompt(`ポイント【${currentName}】の操作\n新しい名称を入力するか、半角「D」で削除します:`, currentName);
+            if (action !== null) {
+              const trimmed = action.trim();
+              if (trimmed.toUpperCase() === 'D' || trimmed === '') {
+                routePoints.splice(hitIdx, 1);
+              } else {
+                routePoints[hitIdx].name = trimmed;
+              }
+              render();
             }
-            render();
+            draggedPtIdx = -1;
+            lastTapPtIdx = -1;
+            return;
+          } else {
+            // 1回目のタップ ➔ ドラッグ移動準備
+            lastTapTime = nowTime;
+            lastTapPtIdx = hitIdx;
+            draggedPtIdx = hitIdx;
+            angleBadge.style.display = 'block';
+            return;
           }
-          return;
         }
 
-        // 新規ポイント追加
-        const nextNum = routePoints.length + 1;
-        routePoints.push({
-          name: `P${nextNum}`,
-          x: clickX / w,
-          y: clickY / h
-        });
-        render();
-        return;
+        // 2. 中間点追加（既存の線分上をタップしたか判定）
+        if (routePoints.length >= 2) {
+          for (let i = 0; i < routePoints.length - 1; i++) {
+            const p1 = { x: routePoints[i].x * w, y: routePoints[i].y * h };
+            const p2 = { x: routePoints[i + 1].x * w, y: routePoints[i + 1].y * h };
+            const seg = getDistanceToSegment({ x: clickX, y: clickY }, p1, p2);
+            if (seg.dist < 14) { // 線から14px以内をタップ
+              const newPt = {
+                name: `P${i + 2}`,
+                x: seg.projX / w,
+                y: seg.projY / h
+              };
+              routePoints.splice(i + 1, 0, newPt);
+              render();
+              return;
+            }
+          }
+        }
+
+        // 3. 新規点追加（＋点追加モード時のみ）
+        if (addMode) {
+          let targetX = clickX;
+          let targetY = clickY;
+          if (routePoints.length > 0) {
+            const prev = routePoints[routePoints.length - 1];
+            const snapped = snapTo5Degrees(prev.x * w, prev.y * h, clickX, clickY);
+            targetX = snapped.x;
+            targetY = snapped.y;
+          }
+          routePoints.push({
+            name: `P${routePoints.length + 1}`,
+            x: targetX / w,
+            y: targetY / h
+          });
+          render();
+          return;
+        }
       }
 
-      // 通常表示時のドラッグ移動
-      isDragging = true;
+      // 通常時：画面のパン移動
+      isPanning = true;
       startX = e.clientX - offset.x;
       startY = e.clientY - offset.y;
     });
 
     canvas.addEventListener('pointermove', (e) => {
-      if (!isDragging || editMode) return;
-      offset.x = e.clientX - startX;
-      offset.y = e.clientY - startY;
-      render();
+      const rect = canvas.getBoundingClientRect();
+      const currentX = (e.clientX - rect.left - offset.x) / scale;
+      const currentY = (e.clientY - rect.top - offset.y) / scale;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+
+      // ピンのドラッグ移動（5°刻みスナップ）
+      if (draggedPtIdx !== -1) {
+        let newX = currentX;
+        let newY = currentY;
+        let deg = 0;
+
+        // 直前の点があればスナップ
+        if (draggedPtIdx > 0) {
+          const prev = routePoints[draggedPtIdx - 1];
+          const snapped = snapTo5Degrees(prev.x * w, prev.y * h, currentX, currentY);
+          newX = snapped.x;
+          newY = snapped.y;
+          deg = snapped.deg;
+        }
+
+        routePoints[draggedPtIdx].x = newX / w;
+        routePoints[draggedPtIdx].y = newY / h;
+        angleBadge.textContent = `📐 ${deg}° (5°刻み)`;
+        render();
+        return;
+      }
+
+      if (isPanning) {
+        offset.x = e.clientX - startX;
+        offset.y = e.clientY - startY;
+        render();
+      }
     });
 
-    window.addEventListener('pointerup', () => { isDragging = false; });
+    window.addEventListener('pointerup', () => {
+      if (draggedPtIdx !== -1) {
+        draggedPtIdx = -1;
+        angleBadge.style.display = 'none';
+        render();
+      }
+      isPanning = false;
+    });
 
-    // 編集モード切替
-    const btnEditMode = document.getElementById('btn-edit-mode');
-    const editSubBar = document.getElementById('edit-sub-bar');
-    btnEditMode.addEventListener('click', (e) => {
+    // 編集モードトグル
+    const btnEdit = document.getElementById('btn-edit-mode');
+    const subBar = document.getElementById('edit-sub-bar');
+    btnEdit.addEventListener('click', () => {
       editMode = !editMode;
-      e.target.textContent = editMode ? '線引き編集: ON' : '線引き編集: OFF';
-      e.target.classList.toggle('active', editMode);
-      editSubBar.classList.toggle('show', editMode);
+      btnEdit.textContent = editMode ? '線引き編集: ON' : '線引き編集: OFF';
+      btnEdit.classList.toggle('active', editMode);
+      subBar.classList.toggle('show', editMode);
+      if (!editMode) addMode = false;
       render();
     });
 
-    // 直前1点消去
+    // 点追加モード
+    const btnAdd = document.getElementById('btn-add-mode');
+    btnAdd.addEventListener('click', () => {
+      addMode = !addMode;
+      btnAdd.classList.toggle('active', addMode);
+      btnAdd.textContent = addMode ? '点追加: タップで設置' : '＋ 点を追加';
+    });
+
+    // 直前点消去
     document.getElementById('btn-undo-pt').addEventListener('click', () => {
       if (routePoints.length > 0) {
         routePoints.pop();
@@ -539,16 +819,16 @@
       }
     });
 
-    // 全点消去
+    // 全点消去 (2段階安全確認)
     document.getElementById('btn-clear-pt').addEventListener('click', () => {
       if (routePoints.length === 0) return;
-      if (confirm('すべてのルートポイントを消去しますか？')) {
+      if (confirm('すべてのルートポイントを削除しますか？\n（この操作は元に戻せません）')) {
         routePoints = [];
         render();
       }
     });
 
-    // 表示位置リセット
+    // 位置リセット
     document.getElementById('btn-reset-view').addEventListener('click', () => {
       offset = { x: 0, y: 0 };
       scale = 1.0;
@@ -564,76 +844,146 @@
       const reader = new FileReader();
       reader.onload = (event) => {
         const newImg = new Image();
-        newImg.onload = () => {
-          img = newImg;
-          render();
-        };
+        newImg.onload = () => { img = newImg; render(); };
         newImg.src = event.target.result;
       };
       reader.readAsDataURL(file);
     });
 
-    // 進捗表示更新
-    function updateProgressUI() {
-      const activeIdx = cableOrder.findIndex(c => c.status === "active");
-      const doneItems = cableOrder.filter(c => c.status === "done");
-      
-      document.getElementById('done-count').textContent = doneItems.length;
-      document.getElementById('total-count').textContent = cableOrder.length;
+    // ==========================================
+    // 準備 ➔ 延線 ➔ 整線（並行）進行ロジック
+    // ==========================================
+    const prepGroup = document.getElementById('prep-group');
+    const pullingGroup = document.getElementById('pulling-group');
+    const phaseLabel = document.getElementById('task-phase-label');
+    const mainBtn = document.getElementById('btn-main-action');
 
-      if (activeIdx !== -1) {
-        document.getElementById('now-cable').textContent = cableOrder[activeIdx].name;
-        const nextCable = cableOrder[activeIdx + 1];
-        document.getElementById('next-cable').textContent = nextCable ? nextCable.name : "全延線終了";
-      } else {
-        document.getElementById('now-cable').textContent = "全完了";
-        document.getElementById('next-cable').textContent = "-";
-      }
-
-      document.querySelectorAll('.cable-circle').forEach(el => {
-        const id = el.getAttribute('data-id');
-        const c = cableOrder.find(item => item.id === id);
-        el.className = 'cable-circle';
-        if (c) {
-          if (c.status === 'done') el.classList.add('done');
-          if (c.status === 'active') el.classList.add('active');
-        }
+    // 準備チェックボックス更新
+    document.querySelectorAll('.prep-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const idx = parseInt(item.getAttribute('data-idx'));
+        prepChecks[idx] = !prepChecks[idx];
+        const cb = item.querySelector('input');
+        cb.checked = prepChecks[idx];
+        item.classList.toggle('checked', prepChecks[idx]);
+        updatePrepState();
       });
+    });
+
+    function updatePrepState() {
+      const checkedCount = prepChecks.filter(Boolean).length;
+      const btn = document.getElementById('btn-main-step');
+      if (checkedCount === 4) {
+        btn.disabled = false;
+        btn.textContent = '延線準備完了 ▷ 開始 (GO)';
+      } else {
+        btn.disabled = true;
+        btn.textContent = `準備項目を確認してください (${checkedCount}/4)`;
+      }
     }
 
-    // 次へ進むボタン
-    document.getElementById('btn-next-step').addEventListener('click', () => {
-      const activeIdx = cableOrder.findIndex(c => c.status === "active");
-      if (activeIdx !== -1) {
-        cableOrder[activeIdx].status = "done";
-        if (activeIdx + 1 < cableOrder.length) {
-          cableOrder[activeIdx + 1].status = "active";
-        }
-        updateProgressUI();
+    // メイン進行ボタン (準備完了 ➔ 延線開始)
+    document.getElementById('btn-main-step').addEventListener('click', () => {
+      if (currentPhase === 'prep') {
+        currentPhase = 'pulling';
+        phaseLabel.textContent = '延線中';
+        phaseLabel.style.background = '#ffd000';
+        phaseLabel.style.color = '#000';
+        prepGroup.style.display = 'none';
+        pullingGroup.style.display = 'flex';
+        invPassedIndex = 0;
+        updatePullingButtons();
+        document.getElementById('btn-main-step').style.display = 'none';
+        render();
       }
     });
 
-    // テキスト入力解釈
-    document.getElementById('btn-ai-send').addEventListener('click', parseInput);
-    document.getElementById('ai-text').addEventListener('keypress', (e) => { if (e.key === 'Enter') parseInput(); });
+    // INV通過ボタン制御
+    const invBtns = [
+      document.getElementById('btn-inv-1'),
+      document.getElementById('btn-inv-2'),
+      document.getElementById('btn-inv-3'),
+      document.getElementById('btn-inv-4')
+    ];
 
-    function parseInput() {
-      const input = document.getElementById('ai-text');
-      const val = input.value.trim();
-      if (!val) return;
+    invBtns.forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        invPassedIndex = idx;
+        updatePullingButtons();
+        render();
 
-      cableOrder.forEach(c => {
-        if (val.includes(c.id) || val.includes(c.num + "番")) {
-          if (val.includes("完了")) {
-            c.status = "done";
-          } else {
-            cableOrder.forEach(x => { if (x.status === "active") x.status = "pending"; });
-            c.status = "active";
-          }
+        // 終点到達時 ➔ 延線完了＆整線（並行）へ
+        if (idx === 3) {
+          completePullingAndShiftNext();
         }
       });
-      input.value = "";
-      updateProgressUI();
+    });
+
+    function updatePullingButtons() {
+      invBtns.forEach((btn, i) => {
+        btn.classList.toggle('passed', i <= invPassedIndex);
+      });
+    }
+
+    // 延線完了 ➔ 次ケーブル準備へ（整線は並行稼働）
+    function completePullingAndShiftNext() {
+      const activeIdx = cables.findIndex(c => c.status === 'active');
+      if (activeIdx !== -1) {
+        // 現在ケーブルを整線中へ
+        cables[activeIdx].status = 'dressing';
+        dressingCables.push(cables[activeIdx].name);
+
+        // 次ケーブルをアクティブ（準備フェーズ）へ
+        if (activeIdx + 1 < cables.length) {
+          cables[activeIdx + 1].status = 'active';
+        }
+
+        // 状態リセット
+        currentPhase = 'prep';
+        prepChecks = [false, false, false, false];
+        document.querySelectorAll('.prep-item').forEach(el => {
+          el.classList.remove('checked');
+          el.querySelector('input').checked = false;
+        });
+
+        phaseLabel.textContent = '延線準備中';
+        phaseLabel.style.background = '#e65100';
+        phaseLabel.style.color = '#fff';
+        prepGroup.style.display = 'grid';
+        pullingGroup.style.display = 'none';
+        document.getElementById('btn-main-step').style.display = 'block';
+        updatePrepState();
+        updateUI();
+        render();
+      }
+    }
+
+    // UI全体更新
+    function updateUI() {
+      const activeIdx = cables.findIndex(c => c.status === 'active');
+      const doneCount = cables.filter(c => c.status === 'done' || c.status === 'dressing').length;
+
+      document.getElementById('done-count').textContent = doneCount;
+      document.getElementById('total-count').textContent = cables.length;
+      document.getElementById('dressing-badge').textContent = `整線中: ${dressingCables.length}本`;
+
+      if (activeIdx !== -1) {
+        document.getElementById('now-cable').textContent = cables[activeIdx].name;
+        document.getElementById('tag-name').textContent = cables[activeIdx].name;
+        const nextCable = cables[activeIdx + 1];
+        document.getElementById('next-cable').textContent = nextCable ? nextCable.name : '全線完了';
+      }
+
+      // 断面丸印の更新
+      document.querySelectorAll('.cable-circle').forEach(el => {
+        const id = el.getAttribute('data-id');
+        const c = cables.find(item => item.id === id);
+        el.className = 'cable-circle';
+        if (c) {
+          if (c.status === 'done' || c.status === 'dressing') el.classList.add('done');
+          if (c.status === 'active') el.classList.add('active');
+        }
+      });
     }
 
     // パネル開閉
@@ -646,8 +996,10 @@
       toggleIcon.textContent = isHidden ? '▲' : '▼';
     });
 
+    // 初期化
     resizeCanvas();
-    updateProgressUI();
+    updatePrepState();
+    updateUI();
     anim();
   </script>
 </body>
