@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>進捗管理アプリ「進ちゃん」</title>
+  <title>進ちゃん</title>
   <style>
     :root {
       --bg-dark: #10151d;
@@ -15,7 +15,7 @@
       --text-main: #ffffff;
       --text-sub: #90a4ae;
       --border-color: #37474f;
-      --header-height: 44px;
+      --header-height: 42px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -51,7 +51,7 @@
     /* ② タスクカード */
     #task-card {
       background: #151c26;
-      padding: 8px 10px;
+      padding: 6px 10px;
       border-bottom: 1px solid var(--border-color);
       flex-shrink: 0;
     }
@@ -60,7 +60,7 @@
       justify-content: space-between;
       align-items: center;
       font-size: 11px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .task-badge-label {
       background: #e65100;
@@ -71,12 +71,12 @@
     }
     .dir-label { color: var(--accent-yellow); font-size: 10px; }
 
-    .prep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .prep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
     .prep-item {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      padding: 8px 6px;
+      padding: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -84,10 +84,10 @@
       cursor: pointer;
       user-select: none;
     }
-    .prep-item input { width: 18px; height: 18px; accent-color: var(--accent-green); pointer-events: none; }
+    .prep-item input { width: 16px; height: 16px; accent-color: var(--accent-green); pointer-events: none; }
     .prep-item.checked { border-color: var(--accent-green); background: rgba(0, 230, 118, 0.12); }
 
-    .pulling-nav-box { display: none; flex-direction: column; gap: 6px; }
+    .pulling-nav-box { display: none; flex-direction: column; gap: 5px; }
     .pulling-status-line { display: flex; justify-content: space-between; font-size: 11px; }
     .pulling-btn-row { display: flex; gap: 8px; }
     .btn-nav-prev {
@@ -95,9 +95,9 @@
       background: #263238;
       border: 1px solid var(--border-color);
       color: #cfd8dc;
-      padding: 12px 6px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 10px 4px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -106,9 +106,9 @@
       background: var(--accent-yellow);
       border: none;
       color: #000;
-      padding: 12px 6px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: 10px 4px;
+      border-radius: 6px;
+      font-size: 13px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -118,11 +118,11 @@
     canvas { display: block; width: 100%; height: 100%; touch-action: none; }
     .canvas-ctrls {
       position: absolute;
-      top: 8px;
-      right: 8px;
+      top: 6px;
+      right: 6px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       z-index: 10;
     }
     .zoom-row { display: flex; gap: 4px; }
@@ -131,9 +131,9 @@
       background: rgba(26, 34, 45, 0.9);
       border: 1px solid var(--border-color);
       color: #fff;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 14px;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 13px;
       font-weight: bold;
       text-align: center;
     }
@@ -141,20 +141,19 @@
       background: rgba(26, 34, 45, 0.9);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 5px 8px;
+      border-radius: 5px;
       font-size: 11px;
-      backdrop-filter: blur(4px);
     }
     .ctrl-btn.active { background: var(--accent-yellow); color: #000; font-weight: bold; }
 
     .edit-sub-bar {
       position: absolute;
-      bottom: 8px;
-      left: 8px;
-      right: 8px;
+      bottom: 6px;
+      left: 6px;
+      right: 6px;
       display: none;
-      gap: 6px;
+      gap: 5px;
       z-index: 10;
     }
     .edit-sub-bar.show { display: flex; }
@@ -163,8 +162,8 @@
       background: rgba(26, 34, 45, 0.95);
       border: 1px solid var(--border-color);
       color: #fff;
-      padding: 8px 4px;
-      border-radius: 6px;
+      padding: 6px 3px;
+      border-radius: 5px;
       font-size: 11px;
       text-align: center;
     }
@@ -173,14 +172,14 @@
 
     #angle-badge {
       position: absolute;
-      top: 8px;
-      left: 8px;
+      top: 6px;
+      left: 6px;
       background: rgba(0, 0, 0, 0.85);
       color: var(--accent-yellow);
       border: 1px solid var(--accent-yellow);
-      padding: 4px 8px;
+      padding: 3px 6px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: bold;
       display: none;
       z-index: 10;
@@ -195,37 +194,32 @@
       padding: 4px 6px;
       display: none;
       gap: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       z-index: 25;
-      transform: translate(-50%, -125%);
+      transform: translate(-50%, -120%);
     }
     .menu-pop-btn {
       background: #2a3544;
       border: 1px solid #455a64;
       color: #fff;
-      padding: 4px 8px;
+      padding: 3px 6px;
       border-radius: 4px;
       font-size: 11px;
-      cursor: pointer;
     }
-    .menu-pop-btn.danger {
-      background: rgba(255, 82, 82, 0.2);
-      color: var(--accent-red);
-      border-color: var(--accent-red);
-    }
-    .menu-pop-btn.close { background: transparent; border: none; color: #90a4ae; font-size: 14px; padding: 0 4px; }
+    .menu-pop-btn.danger { background: rgba(255, 82, 82, 0.2); color: var(--accent-red); }
+    .menu-pop-btn.close { background: transparent; border: none; color: #90a4ae; font-size: 13px; padding: 0 3px; }
 
-    /* ④ 断面パネル（フラットデザイン） */
+    /* ④ 断面パネル */
     #section-panel {
       background: var(--card-bg);
       border-top: 1px solid var(--border-color);
       flex-shrink: 0;
-      max-height: 34vh;
+      max-height: 33vh;
       display: flex;
       flex-direction: column;
     }
     .panel-header {
-      padding: 6px 10px;
+      padding: 5px 10px;
       background: #141b24;
       display: flex;
       justify-content: space-between;
@@ -235,15 +229,15 @@
       cursor: pointer;
     }
     .rack-view {
-      padding: 6px 10px;
+      padding: 5px 8px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
-    .rack-tier { display: flex; align-items: center; gap: 6px; }
+    .rack-tier { display: flex; align-items: center; gap: 5px; }
     .tier-label {
-      width: 36px;
+      width: 34px;
       font-size: 10px;
       color: var(--text-sub);
       text-align: right;
@@ -257,29 +251,28 @@
       border-right: 2px solid #546e7a;
       padding: 2px 4px;
       display: flex;
-      gap: 6px;
-      min-height: 28px;
+      gap: 5px;
+      min-height: 26px;
       align-items: center;
     }
     .cable-circle {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      border: 2px solid #546e7a;
+      border: 1.5px solid #546e7a;
       background: #263238;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: bold;
       color: #cfd8dc;
-      cursor: pointer;
       position: relative;
     }
     .cable-circle span.code {
       position: absolute;
-      top: -10px;
+      top: -9px;
       font-size: 7px;
       color: var(--text-sub);
       white-space: nowrap;
@@ -293,11 +286,6 @@
       border-color: var(--accent-yellow);
       background: rgba(255, 208, 0, 0.35);
       color: var(--accent-yellow);
-      animation: pulse 1s infinite alternate;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0px var(--accent-yellow); }
-      100% { transform: scale(1.05); box-shadow: 0 0 6px var(--accent-yellow); }
     }
 
     /* ⑤ フッター */
@@ -307,7 +295,7 @@
       border-top: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       flex-shrink: 0;
     }
     .btn-main-action {
@@ -315,11 +303,10 @@
       background: #2e7d32;
       border: none;
       color: white;
-      padding: 12px;
+      padding: 10px;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
-      cursor: pointer;
     }
     .btn-main-action:disabled { background: #263238; color: #78909c; }
   </style>
@@ -337,7 +324,6 @@
     </div>
     <div class="progress-count">
       完了: <span id="done-count">6</span> / <span id="total-count">18</span> 本
-      <span style="font-size:9px; color:var(--accent-yellow); display:block;" id="dressing-badge">整線中: 0本</span>
     </div>
   </header>
 
@@ -378,7 +364,7 @@
     <div id="angle-badge">📐 0° (5°刻み)</div>
 
     <div id="pin-menu-popup">
-      <button class="menu-pop-btn" id="pop-btn-rename">✏️ 名称変更</button>
+      <button class="menu-pop-btn" id="pop-btn-rename">✏️ 名称</button>
       <button class="menu-pop-btn danger" id="pop-btn-delete">🗑️ 削除</button>
       <button class="menu-pop-btn close" id="pop-btn-close">✕</button>
     </div>
@@ -392,23 +378,22 @@
       <button class="ctrl-btn" id="btn-load-img">図面読込</button>
       <input type="file" id="file-input" accept="image/*" style="display:none;">
       <button class="ctrl-btn" id="btn-fit-view">全体収容</button>
-      <button class="ctrl-btn" id="btn-reset-data" style="color:#ff8a80;">データ初期化</button>
+      <button class="ctrl-btn" id="btn-reset-data" style="color:#ff8a80;">リセット</button>
     </div>
 
     <div class="edit-sub-bar" id="edit-sub-bar">
-      <button class="edit-btn" id="btn-add-mode">＋ 末尾に追加: OFF</button>
-      <button class="edit-btn" id="btn-undo-pt">直前点消去</button>
-      <button class="edit-btn danger" id="btn-clear-pt">全クリア...</button>
+      <button class="edit-btn" id="btn-add-mode">＋ 末尾追加: OFF</button>
+      <button class="edit-btn" id="btn-undo-pt">直前消去</button>
+      <button class="edit-btn danger" id="btn-clear-pt">全消去</button>
     </div>
   </div>
 
   <div id="section-panel">
     <div class="panel-header" id="panel-toggle">
-      <span>📐 東スタンション 断面並び (フラット表示)</span>
+      <span>📐 東スタンション 断面並び</span>
       <span id="toggle-icon">▲</span>
     </div>
     <div class="rack-view" id="rack-view-content">
-      <!-- 5段目 -->
       <div class="rack-tier">
         <div class="tier-label">5段目</div>
         <div class="tier-bar">
@@ -422,7 +407,6 @@
           <div class="cable-circle" data-id="2BB1"><span class="code">2B-B①</span>⑥</div>
         </div>
       </div>
-      <!-- 4段目 -->
       <div class="rack-tier">
         <div class="tier-label">4段目</div>
         <div class="tier-bar">
@@ -436,7 +420,6 @@
           <div class="cable-circle" data-id="2DB1"><span class="code">2D-B①</span>⑬</div>
         </div>
       </div>
-      <!-- 3段目 -->
       <div class="rack-tier">
         <div class="tier-label">3段目</div>
         <div class="tier-bar">
@@ -450,7 +433,6 @@
           <div class="cable-circle" data-id="2FB1"><span class="code">2F-B①</span>⑧</div>
         </div>
       </div>
-      <!-- 2段目 -->
       <div class="rack-tier">
         <div class="tier-label">2段目</div>
         <div class="tier-bar">
@@ -462,11 +444,10 @@
   </div>
 
   <footer>
-    <button class="btn-main-action" id="btn-main-step" disabled>準備項目を確認してください (0/4)</button>
+    <button class="btn-main-action" id="btn-main-step" disabled>準備項目を確認 (0/4)</button>
   </footer>
 
   <script>
-    // デフォルトのマスターデータ
     const defaultCables = [
       { id: "2CA2", name: "2C-A②", status: "done" },
       { id: "2CA1", name: "2C-A① (⑨)", status: "done" },
@@ -501,86 +482,63 @@
 
     let cables = JSON.parse(JSON.stringify(defaultCables));
     let routePoints = JSON.parse(JSON.stringify(defaultRoutePoints));
-
     let currentPhase = "prep";
     let prepChecks = [false, false, false, false];
     let navSteps = [];
     let currentStepIdx = 0;
     let isTailPassed = false;
-    let dressingCables = [];
 
-    // ==========================================
-    // localStorage 自動保存・復帰処理
-    // ==========================================
-    const STORAGE_KEY = 'sintyan_app_data';
-
+    // ストレージ
+    const STORAGE_KEY = 'sintyan_app_data_v2';
     function saveToStorage() {
       try {
-        const payload = {
-          cables: cables,
-          routePoints: routePoints,
-          currentPhase: currentPhase,
-          prepChecks: prepChecks,
-          currentStepIdx: currentStepIdx,
-          isTailPassed: isTailPassed,
-          dressingCables: dressingCables
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-      } catch (err) {
-        console.warn('保存に失敗しました', err);
-      }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          cables, routePoints, currentPhase, prepChecks, currentStepIdx, isTailPassed
+        }));
+      } catch (e) {}
     }
-
     function loadFromStorage() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-          const data = JSON.parse(saved);
-          if (Array.isArray(data.cables) && data.cables.length > 0) cables = data.cables;
-          if (Array.isArray(data.routePoints) && data.routePoints.length > 0) routePoints = data.routePoints;
-          if (data.currentPhase) currentPhase = data.currentPhase;
-          if (Array.isArray(data.prepChecks)) prepChecks = data.prepChecks;
-          if (data.currentStepIdx !== undefined) currentStepIdx = data.currentStepIdx;
-          if (data.isTailPassed !== undefined) isTailPassed = data.isTailPassed;
-          if (Array.isArray(data.dressingCables)) dressingCables = data.dressingCables;
+          const d = JSON.parse(saved);
+          if (d.cables) cables = d.cables;
+          if (d.routePoints) routePoints = d.routePoints;
+          if (d.currentPhase) currentPhase = d.currentPhase;
+          if (d.prepChecks) prepChecks = d.prepChecks;
+          if (d.currentStepIdx !== undefined) currentStepIdx = d.currentStepIdx;
+          if (d.isTailPassed !== undefined) isTailPassed = d.isTailPassed;
         }
-      } catch (err) {
-        console.warn('復帰に失敗しました', err);
-      }
+      } catch (e) {}
     }
 
-    // データリセット（初期化）
     document.getElementById('btn-reset-data').addEventListener('click', () => {
-      if (confirm('線引きと進捗データを初期状態にリセットしますか？')) {
+      if (confirm('データを初期リセットしますか？')) {
         localStorage.removeItem(STORAGE_KEY);
         cables = JSON.parse(JSON.stringify(defaultCables));
         routePoints = JSON.parse(JSON.stringify(defaultRoutePoints));
         currentPhase = "prep";
         prepChecks = [false, false, false, false];
-        currentStepIdx = 0;
-        isTailPassed = false;
-        dressingCables = [];
-        fitToCenter();
-        rebuildNavSteps();
-        updateUI();
-        render();
+        currentStepIdx = 0; isTailPassed = false;
+        fitToCenter(); rebuildNavSteps(); updateUI(); render();
       }
     });
 
     let editMode = false, addMode = false, draggedPtIdx = -1, selectedMenuPtIdx = -1, isTouchMoved = false;
     let lastBgTapTime = 0, lastBgTapX = 0, lastBgTapY = 0;
-    let touches = [], initialPinchDist = 0, initialPinchScale = 1.0, pinchCenter = { x: 0, y: 0 };
+    let activePointers = {}; // IDと座標のみ保持（メモリ安全）
+    let initialPinchDist = 0, initialPinchScale = 1.0, pinchCenter = { x: 0, y: 0 };
 
     let img = null, offset = { x: 0, y: 0 }, scale = 1.0, dashOffset = 0;
+    let animId = null;
+
     const canvas = document.getElementById('planCanvas'), ctx = canvas.getContext('2d'), container = document.getElementById('drawing-container');
     const angleBadge = document.getElementById('angle-badge'), pinMenu = document.getElementById('pin-menu-popup');
 
+    // ★重要: メモリ節約のためDPR=1で初期化
     function resizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = container.clientWidth * dpr;
-      canvas.height = container.clientHeight * dpr;
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(dpr, dpr);
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
       render();
     }
     window.addEventListener('resize', resizeCanvas);
@@ -589,7 +547,7 @@
 
     function zoomBy(factor) {
       const cx = container.clientWidth / 2, cy = container.clientHeight / 2;
-      const newScale = Math.min(Math.max(scale * factor, 0.5), 5.0);
+      const newScale = Math.min(Math.max(scale * factor, 0.5), 4.0);
       offset.x = cx - (cx - offset.x) * (newScale / scale);
       offset.y = cy - (cy - offset.y) * (newScale / scale);
       scale = newScale;
@@ -611,12 +569,13 @@
       const dx = p2.x - p1.x, dy = p2.y - p1.y, lenSq = dx * dx + dy * dy;
       if (lenSq === 0) return { dist: Math.hypot(p.x - p1.x, p.y - p1.y), t: 0, projX: p1.x, projY: p1.y };
       let t = Math.max(0, Math.min(1, ((p.x - p1.x) * dx + (p.y - p1.y) * dy) / lenSq));
-      const projX = p1.x + t * dx, projY = p1.y + t * dy;
-      return { dist: Math.hypot(p.x - projX, p.y - projY), t, projX, projY };
+      return { dist: Math.hypot(p.x - (p1.x + t * dx), p.y - (p1.y + t * dy)), projX: p1.x + t * dx, projY: p1.y + t * dy };
     }
 
+    // 描画ルーチン
     function render() {
-      const w = container.clientWidth, h = container.clientHeight;
+      const w = canvas.width, h = canvas.height;
+      if (w === 0 || h === 0) return;
       ctx.clearRect(0, 0, w, h);
       ctx.save();
       ctx.translate(offset.x, offset.y);
@@ -629,17 +588,19 @@
         for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
         for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
         ctx.fillStyle = '#546e7a'; ctx.font = '11px sans-serif';
-        ctx.fillText('図面読込から写真選択、または余白をダブルタップで全体収容', 16, 36);
+        ctx.fillText('図面読込から写真選択、または余白をダブルタップで全体収容', 14, 28);
       }
 
       if (routePoints.length > 1) {
+        // 緑の完了線
         ctx.beginPath();
         ctx.moveTo(routePoints[0].x * w, routePoints[0].y * h);
         for (let i = 1; i < routePoints.length; i++) ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
         ctx.strokeStyle = 'rgba(0, 230, 118, 0.4)';
-        ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
         ctx.stroke();
 
+        // 延線中の黄色線
         if (currentPhase === 'pulling' && navSteps.length > 0) {
           const targetPtIdx = navSteps[currentStepIdx] !== undefined ? navSteps[currentStepIdx] : routePoints.length - 1;
           let startPtIdx = 0;
@@ -650,14 +611,10 @@
 
           let overshootPos = null;
           if (!isTailPassed && currentStepIdx < navSteps.length - 1) {
-            const nextTargetIdx = navSteps[currentStepIdx + 1];
             const pFrom = routePoints[targetPtIdx];
-            const pTo = routePoints[targetPtIdx + 1] || routePoints[nextTargetIdx];
+            const pTo = routePoints[targetPtIdx + 1] || routePoints[navSteps[currentStepIdx + 1]];
             if (pFrom && pTo) {
-              overshootPos = {
-                x: (pFrom.x + (pTo.x - pFrom.x) * 0.38) * w,
-                y: (pFrom.y + (pTo.y - pFrom.y) * 0.38) * h
-              };
+              overshootPos = { x: (pFrom.x + (pTo.x - pFrom.x) * 0.38) * w, y: (pFrom.y + (pTo.y - pFrom.y) * 0.38) * h };
             }
           }
 
@@ -666,18 +623,19 @@
           for (let i = startPtIdx + 1; i <= targetPtIdx; i++) ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
           if (overshootPos) ctx.lineTo(overshootPos.x, overshootPos.y);
 
-          ctx.strokeStyle = '#ffd000'; ctx.lineWidth = 4;
-          ctx.setLineDash([10, 6]); ctx.lineDashOffset = -dashOffset;
+          ctx.strokeStyle = '#ffd000'; ctx.lineWidth = 3.5;
+          ctx.setLineDash([8, 6]); ctx.lineDashOffset = -dashOffset;
           ctx.stroke(); ctx.setLineDash([]);
 
           for (let i = startPtIdx; i < targetPtIdx; i++) {
             const x1 = routePoints[i].x * w, y1 = routePoints[i].y * h;
             const x2 = routePoints[i + 1].x * w, y2 = routePoints[i + 1].y * h;
-            const midX = (x1 + x2) / 2, midY = (y1 + y2) / 2;
             const angle = Math.atan2(y2 - y1, x2 - x1);
-            ctx.save(); ctx.translate(midX, midY); ctx.rotate(angle);
+            ctx.save();
+            ctx.translate((x1 + x2) / 2, (y1 + y2) / 2);
+            ctx.rotate(angle);
             ctx.fillStyle = '#ffd000'; ctx.beginPath();
-            ctx.moveTo(-6, -4); ctx.lineTo(6, 0); ctx.lineTo(-6, 4); ctx.closePath(); ctx.fill();
+            ctx.moveTo(-5, -3); ctx.lineTo(5, 0); ctx.lineTo(-5, 3); ctx.closePath(); ctx.fill();
             ctx.restore();
           }
         }
@@ -687,56 +645,70 @@
         const px = pt.x * w, py = pt.y * h;
         const isDragging = (idx === draggedPtIdx);
         ctx.fillStyle = isDragging ? '#ffd000' : (editMode ? '#ff5252' : '#00b0ff');
-        ctx.beginPath(); ctx.arc(px, py, isDragging ? 10 : (editMode ? 8 : 4), 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(px, py, isDragging ? 9 : (editMode ? 7 : 4), 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.2; ctx.stroke();
 
         ctx.font = '10px sans-serif';
         const label = pt.name || `P${idx + 1}`;
-        const textWidth = ctx.measureText(label).width;
+        const tw = ctx.measureText(label).width;
         ctx.fillStyle = 'rgba(16, 21, 29, 0.85)';
-        ctx.fillRect(px - textWidth / 2 - 3, py - 18, textWidth + 6, 12);
+        ctx.fillRect(px - tw / 2 - 2, py - 16, tw + 4, 11);
         ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center';
-        ctx.fillText(label, px, py - 9);
+        ctx.fillText(label, px, py - 7);
       });
 
       ctx.restore();
 
       if (selectedMenuPtIdx !== -1 && routePoints[selectedMenuPtIdx]) {
         const pt = routePoints[selectedMenuPtIdx];
-        const screenX = (pt.x * w) * scale + offset.x;
-        const screenY = (pt.y * h) * scale + offset.y;
-        pinMenu.style.left = `${screenX}px`; pinMenu.style.top = `${screenY}px`;
+        pinMenu.style.left = `${(pt.x * w) * scale + offset.x}px`;
+        pinMenu.style.top = `${(pt.y * h) * scale + offset.y}px`;
       }
     }
 
-    function anim() { dashOffset = (dashOffset + 0.4) % 16; render(); requestAnimationFrame(anim); }
+    // ★省エネアニメーション（延線中だけ回す）
+    function startAnimIfNeeded() {
+      if (animId) return;
+      if (currentPhase === 'pulling') {
+        function loop() {
+          dashOffset = (dashOffset + 0.4) % 14;
+          render();
+          animId = requestAnimationFrame(loop);
+        }
+        loop();
+      }
+    }
+    function stopAnim() {
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+    }
 
     let isPanning = false, startX = 0, startY = 0;
 
     canvas.addEventListener('pointerdown', (e) => {
-      touches.push(e);
-      if (touches.length === 2) {
+      activePointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+      const ptrs = Object.values(activePointers);
+
+      if (ptrs.length === 2) {
         isPanning = false; draggedPtIdx = -1;
         angleBadge.style.display = 'none'; closePinMenu();
-        const t1 = touches[0], t2 = touches[1];
-        initialPinchDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        initialPinchDist = Math.hypot(ptrs[1].x - ptrs[0].x, ptrs[1].y - ptrs[0].y);
         initialPinchScale = scale;
-        pinchCenter = { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 };
+        pinchCenter = { x: (ptrs[0].x + ptrs[1].x) / 2, y: (ptrs[0].y + ptrs[1].y) / 2 };
         return;
       }
-      if (touches.length > 2) return;
+      if (ptrs.length > 2) return;
 
       const rect = canvas.getBoundingClientRect();
       const clickX = (e.clientX - rect.left - offset.x) / scale;
       const clickY = (e.clientY - rect.top - offset.y) / scale;
-      const w = container.clientWidth, h = container.clientHeight;
+      const w = canvas.width, h = canvas.height;
       const now = Date.now();
       isTouchMoved = false;
 
       if (editMode) {
         let hitIdx = -1;
         for (let i = 0; i < routePoints.length; i++) {
-          if (Math.hypot(clickX - routePoints[i].x * w, clickY - routePoints[i].y * h) < 28) {
+          if (Math.hypot(clickX - routePoints[i].x * w, clickY - routePoints[i].y * h) < 26) {
             hitIdx = i; break;
           }
         }
@@ -744,14 +716,13 @@
           draggedPtIdx = hitIdx; angleBadge.style.display = 'block'; render(); return;
         }
 
-        let nearAnyPin = routePoints.some(pt => Math.hypot(clickX - pt.x * w, clickY - pt.y * h) < 35);
-        if (!nearAnyPin && routePoints.length >= 2) {
+        let nearPin = routePoints.some(pt => Math.hypot(clickX - pt.x * w, clickY - pt.y * h) < 32);
+        if (!nearPin && routePoints.length >= 2) {
           for (let i = 0; i < routePoints.length - 1; i++) {
             const seg = getDistanceToSegment({ x: clickX, y: clickY }, { x: routePoints[i].x * w, y: routePoints[i].y * h }, { x: routePoints[i + 1].x * w, y: routePoints[i + 1].y * h });
-            if (seg.dist < 14) {
+            if (seg.dist < 12) {
               routePoints.splice(i + 1, 0, { name: `P${i + 2}`, x: seg.projX / w, y: seg.projY / h });
-              saveToStorage();
-              render(); return;
+              saveToStorage(); render(); return;
             }
           }
         }
@@ -759,17 +730,16 @@
         if (addMode) {
           let targetX = clickX, targetY = clickY;
           if (routePoints.length > 0) {
-            const snapped = snapTo5Degrees(routePoints[routePoints.length - 1].x * w, routePoints[routePoints.length - 1].y * h, clickX, clickY);
-            targetX = snapped.x; targetY = snapped.y;
+            const sn = snapTo5Degrees(routePoints[routePoints.length - 1].x * w, routePoints[routePoints.length - 1].y * h, clickX, clickY);
+            targetX = sn.x; targetY = sn.y;
           }
           routePoints.push({ name: `P${routePoints.length + 1}`, x: targetX / w, y: targetY / h });
-          saveToStorage();
-          render(); return;
+          saveToStorage(); render(); return;
         }
       }
 
       if (!editMode) {
-        if ((now - lastBgTapTime < 380) && Math.hypot(e.clientX - lastBgTapX, e.clientY - lastBgTapY) < 25) {
+        if ((now - lastBgTapTime < 350) && Math.hypot(e.clientX - lastBgTapX, e.clientY - lastBgTapY) < 20) {
           fitToCenter(); lastBgTapTime = 0; return;
         }
         lastBgTapTime = now; lastBgTapX = e.clientX; lastBgTapY = e.clientY;
@@ -779,31 +749,32 @@
     });
 
     canvas.addEventListener('pointermove', (e) => {
-      for (let i = 0; i < touches.length; i++) { if (touches[i].pointerId === e.pointerId) touches[i] = e; }
-      if (touches.length === 2) {
-        const t1 = touches[0], t2 = touches[1];
-        const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
-        if (initialPinchDist > 0) {
-          const newScale = Math.min(Math.max(initialPinchScale * (dist / initialPinchDist), 0.5), 5.0);
-          offset.x = pinchCenter.x - (pinchCenter.x - offset.x) * (newScale / scale);
-          offset.y = pinchCenter.y - (pinchCenter.y - offset.y) * (newScale / scale);
-          scale = newScale;
-          render();
-        }
+      if (activePointers[e.pointerId]) {
+        activePointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+      }
+      const ptrs = Object.values(activePointers);
+
+      if (ptrs.length === 2 && initialPinchDist > 0) {
+        const dist = Math.hypot(ptrs[1].x - ptrs[0].x, ptrs[1].y - ptrs[0].y);
+        const newScale = Math.min(Math.max(initialPinchScale * (dist / initialPinchDist), 0.5), 4.0);
+        offset.x = pinchCenter.x - (pinchCenter.x - offset.x) * (newScale / scale);
+        offset.y = pinchCenter.y - (pinchCenter.y - offset.y) * (newScale / scale);
+        scale = newScale;
+        render();
         return;
       }
 
       const rect = canvas.getBoundingClientRect();
       const currentX = (e.clientX - rect.left - offset.x) / scale;
       const currentY = (e.clientY - rect.top - offset.y) / scale;
-      const w = container.clientWidth, h = container.clientHeight;
+      const w = canvas.width, h = canvas.height;
 
       if (draggedPtIdx !== -1) {
         isTouchMoved = true; closePinMenu();
         let newX = currentX, newY = currentY, deg = 0;
         if (draggedPtIdx > 0) {
-          const snapped = snapTo5Degrees(routePoints[draggedPtIdx - 1].x * w, routePoints[draggedPtIdx - 1].y * h, currentX, currentY);
-          newX = snapped.x; newY = snapped.y; deg = snapped.deg;
+          const sn = snapTo5Degrees(routePoints[draggedPtIdx - 1].x * w, routePoints[draggedPtIdx - 1].y * h, currentX, currentY);
+          newX = sn.x; newY = sn.y; deg = sn.deg;
         }
         routePoints[draggedPtIdx].x = newX / w; routePoints[draggedPtIdx].y = newY / h;
         angleBadge.textContent = `📐 ${deg}° (5°刻み)`; render(); return;
@@ -813,14 +784,13 @@
     });
 
     function handlePointerUp(e) {
-      touches = touches.filter(t => t.pointerId !== e.pointerId);
+      delete activePointers[e.pointerId];
       if (draggedPtIdx !== -1) {
         if (!isTouchMoved) openPinMenu(draggedPtIdx);
         draggedPtIdx = -1; angleBadge.style.display = 'none';
-        saveToStorage(); // ドラッグ終了時に自動保存
-        render();
+        saveToStorage(); render();
       }
-      if (touches.length < 2) initialPinchDist = 0;
+      if (Object.keys(activePointers).length < 2) initialPinchDist = 0;
       isPanning = false;
     }
     canvas.addEventListener('pointerup', handlePointerUp);
@@ -833,28 +803,20 @@
     document.getElementById('pop-btn-rename').addEventListener('click', () => {
       if (selectedMenuPtIdx === -1) return;
       const pt = routePoints[selectedMenuPtIdx];
-      const name = prompt(`ポイント名称を入力（空欄で連番）:`, pt.name || `P${selectedMenuPtIdx + 1}`);
-      if (name !== null) {
-        pt.name = name.trim();
-        saveToStorage();
-        rebuildNavSteps();
-        render();
-      }
+      const name = prompt(`名称を入力:`, pt.name || `P${selectedMenuPtIdx + 1}`);
+      if (name !== null) { pt.name = name.trim(); saveToStorage(); rebuildNavSteps(); render(); }
       closePinMenu();
     });
 
     document.getElementById('pop-btn-delete').addEventListener('click', () => {
       if (selectedMenuPtIdx === -1) return;
-      if (confirm(`ポイントを削除しますか？`)) {
-        routePoints.splice(selectedMenuPtIdx, 1);
-        saveToStorage();
-        rebuildNavSteps();
-        render();
+      if (confirm(`削除しますか？`)) {
+        routePoints.splice(selectedMenuPtIdx, 1); saveToStorage(); rebuildNavSteps(); render();
       }
       closePinMenu();
     });
 
-    document.getElementById('btn-zoom-in').addEventListener('click', () => zoomBy(1.25));
+    document.getElementById('btn-zoom-in').addEventListener('click', () => zoomBy(1.2));
     document.getElementById('btn-zoom-out').addEventListener('click', () => zoomBy(0.8));
     document.getElementById('btn-fit-view').addEventListener('click', fitToCenter);
 
@@ -873,25 +835,15 @@
     btnAdd.addEventListener('click', () => {
       addMode = !addMode;
       btnAdd.classList.toggle('active', addMode);
-      btnAdd.textContent = addMode ? '＋ 末尾に追加: ON' : '＋ 末尾に追加: OFF';
+      btnAdd.textContent = addMode ? '＋ 末尾追加: ON' : '＋ 末尾追加: OFF';
     });
 
     document.getElementById('btn-undo-pt').addEventListener('click', () => {
-      if (routePoints.length > 0) {
-        routePoints.pop();
-        saveToStorage();
-        rebuildNavSteps();
-        render();
-      }
+      if (routePoints.length > 0) { routePoints.pop(); saveToStorage(); rebuildNavSteps(); render(); }
     });
     document.getElementById('btn-clear-pt').addEventListener('click', () => {
       if (routePoints.length === 0) return;
-      if (confirm('すべてのルートポイントを削除しますか？')) {
-        routePoints = [];
-        saveToStorage();
-        rebuildNavSteps();
-        render();
-      }
+      if (confirm('すべて消去しますか？')) { routePoints = []; saveToStorage(); rebuildNavSteps(); render(); }
     });
 
     const fileInput = document.getElementById('file-input');
@@ -927,7 +879,7 @@
         if (count === 4) {
           mainBtn.disabled = false; mainBtn.textContent = '延線準備完了 ▷ 開始 (GO)';
         } else {
-          mainBtn.disabled = true; mainBtn.textContent = `準備項目を確認してください (${count}/4)`;
+          mainBtn.disabled = true; mainBtn.textContent = `準備項目を確認 (${count}/4)`;
         }
         saveToStorage();
       });
@@ -944,6 +896,7 @@
       currentStepIdx = 0; isTailPassed = false;
       updateNavButtonsUI();
       saveToStorage();
+      startAnimIfNeeded();
       render();
     });
 
@@ -954,35 +907,17 @@
 
     btnNext.addEventListener('click', () => {
       if (currentStepIdx === navSteps.length - 1 && !isTailPassed) {
-        isTailPassed = true;
-        updateNavButtonsUI();
-        saveToStorage();
-        render();
-        return;
+        isTailPassed = true; updateNavButtonsUI(); saveToStorage(); render(); return;
       }
       if (isTailPassed) { completePullingAndShiftNext(); return; }
       if (currentStepIdx < navSteps.length - 1) {
-        currentStepIdx++;
-        updateNavButtonsUI();
-        saveToStorage();
-        render();
+        currentStepIdx++; updateNavButtonsUI(); saveToStorage(); render();
       }
     });
 
     btnPrev.addEventListener('click', () => {
-      if (isTailPassed) {
-        isTailPassed = false;
-        updateNavButtonsUI();
-        saveToStorage();
-        render();
-        return;
-      }
-      if (currentStepIdx > 0) {
-        currentStepIdx--;
-        updateNavButtonsUI();
-        saveToStorage();
-        render();
-      }
+      if (isTailPassed) { isTailPassed = false; updateNavButtonsUI(); saveToStorage(); render(); return; }
+      if (currentStepIdx > 0) { currentStepIdx--; updateNavButtonsUI(); saveToStorage(); render(); }
     });
 
     function updateNavButtonsUI() {
@@ -996,13 +931,12 @@
         } else {
           curPosText.textContent = "ドラム抜け・始点到達 (余丁確保)";
           nextTargetText.textContent = "全通過完了";
-          btnNext.textContent = "延線完了 (整線へ送る) ▷";
+          btnNext.textContent = "延線完了 ▷";
         }
       } else {
         const nextPt = routePoints[navSteps[currentStepIdx + 1]];
-        const nextName = nextPt ? nextPt.name : "-";
-        nextTargetText.textContent = `目標: ${nextName} 通過`;
-        btnNext.textContent = `次へ: ${nextName} 通過 ▷`;
+        nextTargetText.textContent = `目標: ${nextPt ? nextPt.name : "-"} 通過`;
+        btnNext.textContent = `次へ: ${nextPt ? nextPt.name : "-"} 通過 ▷`;
       }
       btnPrev.disabled = (currentStepIdx === 0 && !isTailPassed);
     }
@@ -1010,8 +944,7 @@
     function completePullingAndShiftNext() {
       const activeIdx = cables.findIndex(c => c.status === 'active');
       if (activeIdx !== -1) {
-        cables[activeIdx].status = 'dressing';
-        dressingCables.push(cables[activeIdx].name);
+        cables[activeIdx].status = 'done';
         if (activeIdx + 1 < cables.length) cables[activeIdx + 1].status = 'active';
 
         currentPhase = 'prep';
@@ -1027,8 +960,9 @@
 
         const mainBtn = document.getElementById('btn-main-step');
         mainBtn.style.display = 'block'; mainBtn.disabled = true;
-        mainBtn.textContent = '準備項目を確認してください (0/4)';
+        mainBtn.textContent = '準備項目を確認 (0/4)';
 
+        stopAnim();
         saveToStorage();
         updateUI();
         render();
@@ -1037,10 +971,9 @@
 
     function updateUI() {
       const activeIdx = cables.findIndex(c => c.status === 'active');
-      const doneCount = cables.filter(c => c.status === 'done' || c.status === 'dressing').length;
+      const doneCount = cables.filter(c => c.status === 'done').length;
       document.getElementById('done-count').textContent = doneCount;
       document.getElementById('total-count').textContent = cables.length;
-      document.getElementById('dressing-badge').textContent = `整線中: ${dressingCables.length}本`;
 
       if (activeIdx !== -1) {
         document.getElementById('now-cable').textContent = cables[activeIdx].name;
@@ -1054,12 +987,11 @@
         el.className = 'cable-circle';
         const c = cables.find(item => item.id === id);
         if (c) {
-          if (c.status === 'done' || c.status === 'dressing') el.classList.add('done');
+          if (c.status === 'done') el.classList.add('done');
           if (c.status === 'active') el.classList.add('active');
         }
       });
 
-      // 準備チェックボックスのDOM復帰
       prepChecks.forEach((checked, i) => {
         const item = document.querySelector(`.prep-item[data-idx="${i}"]`);
         if (item) {
@@ -1068,7 +1000,6 @@
         }
       });
 
-      // フェーズ表示の復元
       if (currentPhase === 'pulling') {
         document.getElementById('task-phase-label').textContent = '延線中 (引張進行)';
         document.getElementById('task-phase-label').style.background = '#00897b';
@@ -1076,6 +1007,7 @@
         document.getElementById('pulling-group').style.display = 'flex';
         document.getElementById('btn-main-step').style.display = 'none';
         updateNavButtonsUI();
+        startAnimIfNeeded();
       }
     }
 
@@ -1086,12 +1018,11 @@
       toggleIcon.textContent = isHidden ? '▲' : '▼';
     });
 
-    // 起動時の初期化実行
+    // 起動
     loadFromStorage();
     resizeCanvas();
     rebuildNavSteps();
     updateUI();
-    anim();
   </script>
 </body>
 </html>
