@@ -215,12 +215,12 @@
     }
     .menu-pop-btn.close { background: transparent; border: none; color: #90a4ae; font-size: 14px; padding: 0 4px; }
 
-    /* ④ 断面パネル（フラットデザイン復帰） */
+    /* ④ 断面パネル（フラットデザイン） */
     #section-panel {
       background: var(--card-bg);
       border-top: 1px solid var(--border-color);
       flex-shrink: 0;
-      max-height: 32vh;
+      max-height: 34vh;
       display: flex;
       flex-direction: column;
     }
@@ -329,14 +329,14 @@
   <header>
     <div class="status-badge">
       <div class="badge-box badge-now">
-        NOW: <strong id="now-cable">2F-A① (⑦)</strong>
+        NOW: <strong id="now-cable">2D-B② (7本目)</strong>
       </div>
       <div class="badge-box badge-next">
-        NEXT: <strong id="next-cable">2F-B① (⑧)</strong>
+        NEXT: <strong id="next-cable">2D-B①⑬ (8本目)</strong>
       </div>
     </div>
     <div class="progress-count">
-      完了: <span id="done-count">4</span> / <span id="total-count">10</span> 本
+      完了: <span id="done-count">6</span> / <span id="total-count">18</span> 本
       <span style="font-size:9px; color:var(--accent-yellow); display:block;" id="dressing-badge">整線中: 0本</span>
     </div>
   </header>
@@ -354,7 +354,7 @@
         <input type="checkbox" id="p-1"><label for="p-1">2. 延線ロープ通線</label>
       </div>
       <div class="prep-item" data-idx="2">
-        <input type="checkbox" id="p-2"><label for="p-2">3. タグ呼称確認 (<span id="tag-name">2F-A①⑦</span>)</label>
+        <input type="checkbox" id="p-2"><label for="p-2">3. タグ呼称確認 (<span id="tag-name">2D-B②</span>)</label>
       </div>
       <div class="prep-item" data-idx="3">
         <input type="checkbox" id="p-3"><label for="p-3">4. ケーブルヘッド準備</label>
@@ -407,32 +407,35 @@
       <span id="toggle-icon">▲</span>
     </div>
     <div class="rack-view" id="rack-view-content">
+      <!-- 5段目：全て未完了 -->
       <div class="rack-tier">
         <div class="tier-label">5段目</div>
         <div class="tier-bar">
-          <div class="cable-circle done" data-id="2AA2"><span class="code">2A-A②</span></div>
-          <div class="cable-circle done" data-id="2AA1"><span class="code">2A-A①</span>①</div>
-          <div class="cable-circle done" data-id="2AB2"><span class="code">2A-B②</span></div>
-          <div class="cable-circle done" data-id="2AB1"><span class="code">2A-B①</span>②</div>
-          <div class="cable-circle done" data-id="2BA2"><span class="code">2B-A②</span></div>
-          <div class="cable-circle done" data-id="2BA1"><span class="code">2B-A①</span>⑤</div>
-          <div class="cable-circle done" data-id="2BB2"><span class="code">2B-B②</span></div>
-          <div class="cable-circle done" data-id="2BB1"><span class="code">2B-B①</span>⑥</div>
+          <div class="cable-circle" data-id="2AA2"><span class="code">2A-A②</span></div>
+          <div class="cable-circle" data-id="2AA1"><span class="code">2A-A①</span>①</div>
+          <div class="cable-circle" data-id="2AB2"><span class="code">2A-B②</span></div>
+          <div class="cable-circle" data-id="2AB1"><span class="code">2A-B①</span>②</div>
+          <div class="cable-circle" data-id="2BA2"><span class="code">2B-A②</span></div>
+          <div class="cable-circle" data-id="2BA1"><span class="code">2B-A①</span>⑤</div>
+          <div class="cable-circle" data-id="2BB2"><span class="code">2B-B②</span></div>
+          <div class="cable-circle" data-id="2BB1"><span class="code">2B-B①</span>⑥</div>
         </div>
       </div>
+      <!-- 4段目：左から6本完了、7本目延線中、8本目未完 -->
       <div class="rack-tier">
         <div class="tier-label">4段目</div>
         <div class="tier-bar">
-          <div class="cable-circle" data-id="2CA2"><span class="code">2C-A②</span></div>
-          <div class="cable-circle" data-id="2CA1"><span class="code">2C-A①</span>⑨</div>
-          <div class="cable-circle" data-id="2CB2"><span class="code">2C-B②</span></div>
-          <div class="cable-circle" data-id="2CB1"><span class="code">2C-B①</span>⑩</div>
-          <div class="cable-circle" data-id="2DA2"><span class="code">2D-A②</span></div>
-          <div class="cable-circle" data-id="2DA1"><span class="code">2D-A①</span>⑭</div>
-          <div class="cable-circle" data-id="2DB2"><span class="code">2D-B②</span></div>
+          <div class="cable-circle done" data-id="2CA2"><span class="code">2C-A②</span></div>
+          <div class="cable-circle done" data-id="2CA1"><span class="code">2C-A①</span>⑨</div>
+          <div class="cable-circle done" data-id="2CB2"><span class="code">2C-B②</span></div>
+          <div class="cable-circle done" data-id="2CB1"><span class="code">2C-B①</span>⑩</div>
+          <div class="cable-circle done" data-id="2DA2"><span class="code">2D-A②</span></div>
+          <div class="cable-circle done" data-id="2DA1"><span class="code">2D-A①</span>⑭</div>
+          <div class="cable-circle active" data-id="2DB2"><span class="code">2D-B②</span></div>
           <div class="cable-circle" data-id="2DB1"><span class="code">2D-B①</span>⑬</div>
         </div>
       </div>
+      <!-- 3段目：未完 -->
       <div class="rack-tier">
         <div class="tier-label">3段目</div>
         <div class="tier-bar">
@@ -440,12 +443,13 @@
           <div class="cable-circle" data-id="2EA1"><span class="code">2E-A①</span>⑪</div>
           <div class="cable-circle" data-id="2EB2"><span class="code">2E-B②</span></div>
           <div class="cable-circle" data-id="2EB1"><span class="code">2E-B①</span>⑫</div>
-          <div class="cable-circle active" data-id="2FA2"><span class="code">2F-A②</span></div>
-          <div class="cable-circle active" data-id="2FA1"><span class="code">2F-A①</span>⑦</div>
+          <div class="cable-circle" data-id="2FA2"><span class="code">2F-A②</span></div>
+          <div class="cable-circle" data-id="2FA1"><span class="code">2F-A①</span>⑦</div>
           <div class="cable-circle" data-id="2FB2"><span class="code">2F-B②</span></div>
           <div class="cable-circle" data-id="2FB1"><span class="code">2F-B①</span>⑧</div>
         </div>
       </div>
+      <!-- 2段目 -->
       <div class="rack-tier">
         <div class="tier-label">2段目</div>
         <div class="tier-bar">
@@ -461,17 +465,31 @@
   </footer>
 
   <script>
+    // 施工進捗台帳（5段目全未完、4段目6本完了・7本目作業中・8本目次回）
     let cables = [
-      { id: "2AA", num: 1, name: "2A-A① (①)", status: "done" },
-      { id: "2AB", num: 2, name: "2A-B① (②)", status: "done" },
-      { id: "2BA", num: 5, name: "2B-A① (⑤)", status: "done" },
-      { id: "2BB", num: 6, name: "2B-B① (⑥)", status: "done" },
-      { id: "2FA", num: 7, name: "2F-A① (⑦)", status: "active" },
-      { id: "2FB", num: 8, name: "2F-B① (⑧)", status: "pending" },
-      { id: "2CA", num: 9, name: "2C-A① (⑨)", status: "pending" },
-      { id: "2CB", num: 10, name: "2C-B① (⑩)", status: "pending" },
-      { id: "2EA", num: 11, name: "2E-A① (⑪)", status: "pending" },
-      { id: "2EB", num: 12, name: "2E-B① (⑫)", status: "pending" }
+      // 4段目（現在施工中エリア）
+      { id: "2CA2", name: "2C-A②", status: "done" },
+      { id: "2CA1", name: "2C-A① (⑨)", status: "done" },
+      { id: "2CB2", name: "2C-B②", status: "done" },
+      { id: "2CB1", name: "2C-B① (⑩)", status: "done" },
+      { id: "2DA2", name: "2D-A②", status: "done" },
+      { id: "2DA1", name: "2D-A① (⑭)", status: "done" },
+      { id: "2DB2", name: "2D-B② (7本目)", status: "active" }, // 現在延線中
+      { id: "2DB1", name: "2D-B①⑬ (8本目)", status: "pending" },
+
+      // 5段目（未着手）
+      { id: "2AA2", name: "2A-A②", status: "pending" },
+      { id: "2AA1", name: "2A-A① (①)", status: "pending" },
+      { id: "2AB2", name: "2A-B②", status: "pending" },
+      { id: "2AB1", name: "2A-B① (②)", status: "pending" },
+      { id: "2BA2", name: "2B-A②", status: "pending" },
+      { id: "2BA1", name: "2B-A① (⑤)", status: "pending" },
+      { id: "2BB2", name: "2B-B②", status: "pending" },
+      { id: "2BB1", name: "2B-B① (⑥)", status: "pending" },
+
+      // 3段目
+      { id: "2EA2", name: "2E-A②", status: "pending" },
+      { id: "2EA1", name: "2E-A① (⑪)", status: "pending" }
     ];
 
     let routePoints = [
@@ -929,10 +947,8 @@
 
       document.querySelectorAll('.cable-circle').forEach(el => {
         const id = el.getAttribute('data-id');
+        const c = cables.find(item => item.id === id);
         el.className = 'cable-circle';
-        // 2本ペア連動
-        const baseId = id.replace(/[12]$/, '');
-        const c = cables.find(item => item.id.replace(/[12]$/, '') === baseId);
         if (c) {
           if (c.status === 'done' || c.status === 'dressing') el.classList.add('done');
           if (c.status === 'active') el.classList.add('active');
