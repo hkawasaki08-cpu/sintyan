@@ -392,6 +392,7 @@
       <button class="ctrl-btn" id="btn-load-img">図面読込</button>
       <input type="file" id="file-input" accept="image/*" style="display:none;">
       <button class="ctrl-btn" id="btn-fit-view">全体収容</button>
+      <button class="ctrl-btn" id="btn-reset-data" style="color:#ff8a80;">データ初期化</button>
     </div>
 
     <div class="edit-sub-bar" id="edit-sub-bar">
@@ -407,7 +408,7 @@
       <span id="toggle-icon">▲</span>
     </div>
     <div class="rack-view" id="rack-view-content">
-      <!-- 5段目：全て未完了 -->
+      <!-- 5段目 -->
       <div class="rack-tier">
         <div class="tier-label">5段目</div>
         <div class="tier-bar">
@@ -421,7 +422,7 @@
           <div class="cable-circle" data-id="2BB1"><span class="code">2B-B①</span>⑥</div>
         </div>
       </div>
-      <!-- 4段目：左から6本完了、7本目延線中、8本目未完 -->
+      <!-- 4段目 -->
       <div class="rack-tier">
         <div class="tier-label">4段目</div>
         <div class="tier-bar">
@@ -435,7 +436,7 @@
           <div class="cable-circle" data-id="2DB1"><span class="code">2D-B①</span>⑬</div>
         </div>
       </div>
-      <!-- 3段目：未完 -->
+      <!-- 3段目 -->
       <div class="rack-tier">
         <div class="tier-label">3段目</div>
         <div class="tier-bar">
@@ -465,19 +466,16 @@
   </footer>
 
   <script>
-    // 施工進捗台帳（5段目全未完、4段目6本完了・7本目作業中・8本目次回）
-    let cables = [
-      // 4段目（現在施工中エリア）
+    // デフォルトのマスターデータ
+    const defaultCables = [
       { id: "2CA2", name: "2C-A②", status: "done" },
       { id: "2CA1", name: "2C-A① (⑨)", status: "done" },
       { id: "2CB2", name: "2C-B②", status: "done" },
       { id: "2CB1", name: "2C-B① (⑩)", status: "done" },
       { id: "2DA2", name: "2D-A②", status: "done" },
       { id: "2DA1", name: "2D-A① (⑭)", status: "done" },
-      { id: "2DB2", name: "2D-B② (7本目)", status: "active" }, // 現在延線中
+      { id: "2DB2", name: "2D-B② (7本目)", status: "active" },
       { id: "2DB1", name: "2D-B①⑬ (8本目)", status: "pending" },
-
-      // 5段目（未着手）
       { id: "2AA2", name: "2A-A②", status: "pending" },
       { id: "2AA1", name: "2A-A① (①)", status: "pending" },
       { id: "2AB2", name: "2A-B②", status: "pending" },
@@ -486,13 +484,11 @@
       { id: "2BA1", name: "2B-A① (⑤)", status: "pending" },
       { id: "2BB2", name: "2B-B②", status: "pending" },
       { id: "2BB1", name: "2B-B① (⑥)", status: "pending" },
-
-      // 3段目
       { id: "2EA2", name: "2E-A②", status: "pending" },
       { id: "2EA1", name: "2E-A① (⑪)", status: "pending" }
     ];
 
-    let routePoints = [
+    const defaultRoutePoints = [
       { name: "ドラム", x: 0.12, y: 0.22 },
       { name: "始点", x: 0.28, y: 0.22 },
       { name: "INV1", x: 0.44, y: 0.22 },
@@ -503,12 +499,73 @@
       { name: "終点", x: 0.12, y: 0.82 }
     ];
 
+    let cables = JSON.parse(JSON.stringify(defaultCables));
+    let routePoints = JSON.parse(JSON.stringify(defaultRoutePoints));
+
     let currentPhase = "prep";
     let prepChecks = [false, false, false, false];
     let navSteps = [];
     let currentStepIdx = 0;
     let isTailPassed = false;
     let dressingCables = [];
+
+    // ==========================================
+    // localStorage 自動保存・復帰処理
+    // ==========================================
+    const STORAGE_KEY = 'sintyan_app_data';
+
+    function saveToStorage() {
+      try {
+        const payload = {
+          cables: cables,
+          routePoints: routePoints,
+          currentPhase: currentPhase,
+          prepChecks: prepChecks,
+          currentStepIdx: currentStepIdx,
+          isTailPassed: isTailPassed,
+          dressingCables: dressingCables
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        console.warn('保存に失敗しました', err);
+      }
+    }
+
+    function loadFromStorage() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const data = JSON.parse(saved);
+          if (Array.isArray(data.cables) && data.cables.length > 0) cables = data.cables;
+          if (Array.isArray(data.routePoints) && data.routePoints.length > 0) routePoints = data.routePoints;
+          if (data.currentPhase) currentPhase = data.currentPhase;
+          if (Array.isArray(data.prepChecks)) prepChecks = data.prepChecks;
+          if (data.currentStepIdx !== undefined) currentStepIdx = data.currentStepIdx;
+          if (data.isTailPassed !== undefined) isTailPassed = data.isTailPassed;
+          if (Array.isArray(data.dressingCables)) dressingCables = data.dressingCables;
+        }
+      } catch (err) {
+        console.warn('復帰に失敗しました', err);
+      }
+    }
+
+    // データリセット（初期化）
+    document.getElementById('btn-reset-data').addEventListener('click', () => {
+      if (confirm('線引きと進捗データを初期状態にリセットしますか？')) {
+        localStorage.removeItem(STORAGE_KEY);
+        cables = JSON.parse(JSON.stringify(defaultCables));
+        routePoints = JSON.parse(JSON.stringify(defaultRoutePoints));
+        currentPhase = "prep";
+        prepChecks = [false, false, false, false];
+        currentStepIdx = 0;
+        isTailPassed = false;
+        dressingCables = [];
+        fitToCenter();
+        rebuildNavSteps();
+        updateUI();
+        render();
+      }
+    });
 
     let editMode = false, addMode = false, draggedPtIdx = -1, selectedMenuPtIdx = -1, isTouchMoved = false;
     let lastBgTapTime = 0, lastBgTapX = 0, lastBgTapY = 0;
@@ -693,6 +750,7 @@
             const seg = getDistanceToSegment({ x: clickX, y: clickY }, { x: routePoints[i].x * w, y: routePoints[i].y * h }, { x: routePoints[i + 1].x * w, y: routePoints[i + 1].y * h });
             if (seg.dist < 14) {
               routePoints.splice(i + 1, 0, { name: `P${i + 2}`, x: seg.projX / w, y: seg.projY / h });
+              saveToStorage();
               render(); return;
             }
           }
@@ -705,6 +763,7 @@
             targetX = snapped.x; targetY = snapped.y;
           }
           routePoints.push({ name: `P${routePoints.length + 1}`, x: targetX / w, y: targetY / h });
+          saveToStorage();
           render(); return;
         }
       }
@@ -757,7 +816,9 @@
       touches = touches.filter(t => t.pointerId !== e.pointerId);
       if (draggedPtIdx !== -1) {
         if (!isTouchMoved) openPinMenu(draggedPtIdx);
-        draggedPtIdx = -1; angleBadge.style.display = 'none'; render();
+        draggedPtIdx = -1; angleBadge.style.display = 'none';
+        saveToStorage(); // ドラッグ終了時に自動保存
+        render();
       }
       if (touches.length < 2) initialPinchDist = 0;
       isPanning = false;
@@ -773,14 +834,22 @@
       if (selectedMenuPtIdx === -1) return;
       const pt = routePoints[selectedMenuPtIdx];
       const name = prompt(`ポイント名称を入力（空欄で連番）:`, pt.name || `P${selectedMenuPtIdx + 1}`);
-      if (name !== null) { pt.name = name.trim(); rebuildNavSteps(); render(); }
+      if (name !== null) {
+        pt.name = name.trim();
+        saveToStorage();
+        rebuildNavSteps();
+        render();
+      }
       closePinMenu();
     });
 
     document.getElementById('pop-btn-delete').addEventListener('click', () => {
       if (selectedMenuPtIdx === -1) return;
       if (confirm(`ポイントを削除しますか？`)) {
-        routePoints.splice(selectedMenuPtIdx, 1); rebuildNavSteps(); render();
+        routePoints.splice(selectedMenuPtIdx, 1);
+        saveToStorage();
+        rebuildNavSteps();
+        render();
       }
       closePinMenu();
     });
@@ -808,11 +877,21 @@
     });
 
     document.getElementById('btn-undo-pt').addEventListener('click', () => {
-      if (routePoints.length > 0) { routePoints.pop(); rebuildNavSteps(); render(); }
+      if (routePoints.length > 0) {
+        routePoints.pop();
+        saveToStorage();
+        rebuildNavSteps();
+        render();
+      }
     });
     document.getElementById('btn-clear-pt').addEventListener('click', () => {
       if (routePoints.length === 0) return;
-      if (confirm('すべてのルートポイントを削除しますか？')) { routePoints = []; rebuildNavSteps(); render(); }
+      if (confirm('すべてのルートポイントを削除しますか？')) {
+        routePoints = [];
+        saveToStorage();
+        rebuildNavSteps();
+        render();
+      }
     });
 
     const fileInput = document.getElementById('file-input');
@@ -850,6 +929,7 @@
         } else {
           mainBtn.disabled = true; mainBtn.textContent = `準備項目を確認してください (${count}/4)`;
         }
+        saveToStorage();
       });
     });
 
@@ -862,7 +942,9 @@
       document.getElementById('btn-main-step').style.display = 'none';
       rebuildNavSteps();
       currentStepIdx = 0; isTailPassed = false;
-      updateNavButtonsUI(); render();
+      updateNavButtonsUI();
+      saveToStorage();
+      render();
     });
 
     const btnPrev = document.getElementById('btn-nav-prev');
@@ -872,15 +954,35 @@
 
     btnNext.addEventListener('click', () => {
       if (currentStepIdx === navSteps.length - 1 && !isTailPassed) {
-        isTailPassed = true; updateNavButtonsUI(); render(); return;
+        isTailPassed = true;
+        updateNavButtonsUI();
+        saveToStorage();
+        render();
+        return;
       }
       if (isTailPassed) { completePullingAndShiftNext(); return; }
-      if (currentStepIdx < navSteps.length - 1) { currentStepIdx++; updateNavButtonsUI(); render(); }
+      if (currentStepIdx < navSteps.length - 1) {
+        currentStepIdx++;
+        updateNavButtonsUI();
+        saveToStorage();
+        render();
+      }
     });
 
     btnPrev.addEventListener('click', () => {
-      if (isTailPassed) { isTailPassed = false; updateNavButtonsUI(); render(); return; }
-      if (currentStepIdx > 0) { currentStepIdx--; updateNavButtonsUI(); render(); }
+      if (isTailPassed) {
+        isTailPassed = false;
+        updateNavButtonsUI();
+        saveToStorage();
+        render();
+        return;
+      }
+      if (currentStepIdx > 0) {
+        currentStepIdx--;
+        updateNavButtonsUI();
+        saveToStorage();
+        render();
+      }
     });
 
     function updateNavButtonsUI() {
@@ -927,7 +1029,9 @@
         mainBtn.style.display = 'block'; mainBtn.disabled = true;
         mainBtn.textContent = '準備項目を確認してください (0/4)';
 
-        updateUI(); render();
+        saveToStorage();
+        updateUI();
+        render();
       }
     }
 
@@ -947,13 +1051,32 @@
 
       document.querySelectorAll('.cable-circle').forEach(el => {
         const id = el.getAttribute('data-id');
-        const c = cables.find(item => item.id === id);
         el.className = 'cable-circle';
+        const c = cables.find(item => item.id === id);
         if (c) {
           if (c.status === 'done' || c.status === 'dressing') el.classList.add('done');
           if (c.status === 'active') el.classList.add('active');
         }
       });
+
+      // 準備チェックボックスのDOM復帰
+      prepChecks.forEach((checked, i) => {
+        const item = document.querySelector(`.prep-item[data-idx="${i}"]`);
+        if (item) {
+          item.querySelector('input').checked = checked;
+          item.classList.toggle('checked', checked);
+        }
+      });
+
+      // フェーズ表示の復元
+      if (currentPhase === 'pulling') {
+        document.getElementById('task-phase-label').textContent = '延線中 (引張進行)';
+        document.getElementById('task-phase-label').style.background = '#00897b';
+        document.getElementById('prep-group').style.display = 'none';
+        document.getElementById('pulling-group').style.display = 'flex';
+        document.getElementById('btn-main-step').style.display = 'none';
+        updateNavButtonsUI();
+      }
     }
 
     const panelToggle = document.getElementById('panel-toggle'), rackContent = document.getElementById('rack-view-content'), toggleIcon = document.getElementById('toggle-icon');
@@ -963,7 +1086,12 @@
       toggleIcon.textContent = isHidden ? '▲' : '▼';
     });
 
-    resizeCanvas(); rebuildNavSteps(); updateUI(); anim();
+    // 起動時の初期化実行
+    loadFromStorage();
+    resizeCanvas();
+    rebuildNavSteps();
+    updateUI();
+    anim();
   </script>
 </body>
 </html>
