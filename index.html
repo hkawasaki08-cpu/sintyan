@@ -45,8 +45,19 @@
     .badge-box strong { display: block; font-size: 13px; }
     .badge-now { color: var(--accent-yellow); }
     .badge-next { color: var(--accent-blue); }
+    .header-right { display: flex; align-items: center; gap: 8px; }
     .progress-count { text-align: right; font-size: 11px; color: var(--text-sub); }
     .progress-count span { font-size: 15px; color: var(--accent-green); font-weight: bold; }
+    .btn-dressing-badge {
+      background: #e65100;
+      color: #fff;
+      border: 1px solid #ff9800;
+      padding: 3px 6px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
     /* ② タスクカード */
     #task-card {
@@ -116,37 +127,64 @@
     /* ③ 図面領域 (Canvas) */
     #drawing-container { flex: 1; position: relative; background: #000; overflow: hidden; }
     canvas { display: block; width: 100%; height: 100%; touch-action: none; }
-    .canvas-ctrls {
+    
+    /* 右上 設定ボタン＆展開メニュー */
+    .settings-wrapper {
       position: absolute;
       top: 6px;
       right: 6px;
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
       gap: 5px;
-      z-index: 10;
+      z-index: 20;
     }
-    .zoom-row { display: flex; gap: 4px; }
-    .zoom-btn {
-      flex: 1;
-      background: rgba(26, 34, 45, 0.9);
-      border: 1px solid var(--border-color);
-      color: #fff;
-      padding: 5px;
-      border-radius: 5px;
-      font-size: 13px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .ctrl-btn {
-      background: rgba(26, 34, 45, 0.9);
+    .btn-settings-toggle {
+      background: rgba(26, 34, 45, 0.92);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 5px 8px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+    }
+    .btn-settings-toggle.active {
+      background: var(--accent-yellow);
+      color: #000;
+      border-color: #fbc02d;
+    }
+    .settings-dropdown {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: rgba(16, 21, 29, 0.95);
+      border: 1px solid var(--border-color);
+      padding: 6px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+    }
+    .settings-dropdown.show { display: flex; }
+    .dropdown-btn {
+      background: #222d3d;
+      border: 1px solid #37474f;
+      color: var(--text-main);
+      padding: 6px 10px;
       border-radius: 5px;
       font-size: 11px;
+      text-align: center;
+      cursor: pointer;
+      white-space: nowrap;
     }
-    .ctrl-btn.active { background: var(--accent-yellow); color: #000; font-weight: bold; }
+    .dropdown-btn.active {
+      background: var(--accent-yellow);
+      color: #000;
+      font-weight: bold;
+    }
 
+    /* 編集補助バー */
     .edit-sub-bar {
       position: absolute;
       bottom: 6px;
@@ -218,14 +256,16 @@
       display: flex;
       flex-direction: column;
     }
-    .panel-header {
-      padding: 5px 10px;
+    .panel-toggle-btn {
+      width: 100%;
       background: #141b24;
+      border: none;
+      padding: 6px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
       color: var(--text-sub);
+      font-size: 11px;
       cursor: pointer;
     }
     .rack-view {
@@ -287,6 +327,11 @@
       background: rgba(255, 208, 0, 0.35);
       color: var(--accent-yellow);
     }
+    .cable-circle.dressing {
+      border-color: #ff9800;
+      background: rgba(255, 152, 0, 0.3);
+      color: #ffb74d;
+    }
 
     /* ⑤ フッター */
     footer {
@@ -309,10 +354,48 @@
       font-weight: bold;
     }
     .btn-main-action:disabled { background: #263238; color: #78909c; }
+
+    /* 整線完了モーダル */
+    #dressing-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      width: 85%;
+      max-width: 320px;
+    }
+    .modal-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+    .dressing-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; margin-bottom: 12px; }
+    .dressing-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #10151d;
+      padding: 6px 8px;
+      border-radius: 5px;
+    }
+    .btn-complete-dressing {
+      background: #2e7d32;
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
   </style>
 </head>
 <body>
 
+  <!-- ① ヘッダー -->
   <header>
     <div class="status-badge">
       <div class="badge-box badge-now">
@@ -322,11 +405,15 @@
         NEXT: <strong id="next-cable">2D-B①⑬ (8本目)</strong>
       </div>
     </div>
-    <div class="progress-count">
-      完了: <span id="done-count">6</span> / <span id="total-count">18</span> 本
+    <div class="header-right">
+      <button class="btn-dressing-badge" id="btn-dressing-toggle">🔧 整線中: 0本</button>
+      <div class="progress-count">
+        完了: <span id="done-count">6</span> / <span id="total-count">18</span> 本
+      </div>
     </div>
   </header>
 
+  <!-- ② タスクカード -->
   <div id="task-card">
     <div class="task-header">
       <span class="task-badge-label" id="task-phase-label">延線準備中</span>
@@ -359,28 +446,31 @@
     </div>
   </div>
 
+  <!-- ③ 図面領域 (Canvas) -->
   <div id="drawing-container">
     <canvas id="planCanvas"></canvas>
     <div id="angle-badge">📐 0° (5°刻み)</div>
 
+    <!-- ピンタップ時の操作小窓メニュー -->
     <div id="pin-menu-popup">
       <button class="menu-pop-btn" id="pop-btn-rename">✏️ 名称</button>
       <button class="menu-pop-btn danger" id="pop-btn-delete">🗑️ 削除</button>
       <button class="menu-pop-btn close" id="pop-btn-close">✕</button>
     </div>
 
-    <div class="canvas-ctrls">
-      <div class="zoom-row">
-        <button class="zoom-btn" id="btn-zoom-in">＋</button>
-        <button class="zoom-btn" id="btn-zoom-out">－</button>
+    <!-- 右上：設定ボタン＆展開メニュー -->
+    <div class="settings-wrapper">
+      <button class="btn-settings-toggle" id="btn-settings-toggle">⚙ 設定</button>
+      <div class="settings-dropdown" id="settings-dropdown">
+        <button class="dropdown-btn" id="btn-edit-mode">線引き編集: OFF</button>
+        <button class="dropdown-btn" id="btn-load-img">図面読込</button>
+        <input type="file" id="file-input" accept="image/*" style="display:none;">
+        <button class="dropdown-btn" id="btn-fit-view">全体収容</button>
+        <button class="dropdown-btn" id="btn-reset-data" style="color:#ff8a80;">データ初期化</button>
       </div>
-      <button class="ctrl-btn" id="btn-edit-mode">線引き編集: OFF</button>
-      <button class="ctrl-btn" id="btn-load-img">図面読込</button>
-      <input type="file" id="file-input" accept="image/*" style="display:none;">
-      <button class="ctrl-btn" id="btn-fit-view">全体収容</button>
-      <button class="ctrl-btn" id="btn-reset-data" style="color:#ff8a80;">リセット</button>
     </div>
 
+    <!-- 線引き編集サブメニュー -->
     <div class="edit-sub-bar" id="edit-sub-bar">
       <button class="edit-btn" id="btn-add-mode">＋ 末尾追加: OFF</button>
       <button class="edit-btn" id="btn-undo-pt">直前消去</button>
@@ -388,12 +478,14 @@
     </div>
   </div>
 
+  <!-- ④ 断面パネル -->
   <div id="section-panel">
-    <div class="panel-header" id="panel-toggle">
-      <span>📐 東スタンション 断面並び</span>
-      <span id="toggle-icon">▲</span>
-    </div>
-    <div class="rack-view" id="rack-view-content">
+    <button class="panel-toggle-btn" id="panel-toggle">
+      <span>📐 東スタンション 断面並び (タップで開閉)</span>
+      <span id="toggle-icon">▲ 開く</span>
+    </button>
+    <div class="rack-view" id="rack-view-content" style="display:none;">
+      <!-- 5段目 -->
       <div class="rack-tier">
         <div class="tier-label">5段目</div>
         <div class="tier-bar">
@@ -407,6 +499,7 @@
           <div class="cable-circle" data-id="2BB1"><span class="code">2B-B①</span>⑥</div>
         </div>
       </div>
+      <!-- 4段目 -->
       <div class="rack-tier">
         <div class="tier-label">4段目</div>
         <div class="tier-bar">
@@ -420,6 +513,7 @@
           <div class="cable-circle" data-id="2DB1"><span class="code">2D-B①</span>⑬</div>
         </div>
       </div>
+      <!-- 3段目 -->
       <div class="rack-tier">
         <div class="tier-label">3段目</div>
         <div class="tier-bar">
@@ -433,6 +527,7 @@
           <div class="cable-circle" data-id="2FB1"><span class="code">2F-B①</span>⑧</div>
         </div>
       </div>
+      <!-- 2段目 -->
       <div class="rack-tier">
         <div class="tier-label">2段目</div>
         <div class="tier-bar">
@@ -443,9 +538,19 @@
     </div>
   </div>
 
+  <!-- ⑤ フッター -->
   <footer>
     <button class="btn-main-action" id="btn-main-step" disabled>準備項目を確認 (0/4)</button>
   </footer>
+
+  <!-- 整線完了モーダル -->
+  <div id="dressing-modal">
+    <div class="modal-box">
+      <div class="modal-title">🔧 整線中ケーブル一覧</div>
+      <div class="dressing-list" id="dressing-list-content"></div>
+      <button class="dropdown-btn" style="width:100%;" id="btn-close-dressing">閉じる</button>
+    </div>
+  </div>
 
   <script>
     const defaultCables = [
@@ -487,13 +592,13 @@
     let navSteps = [];
     let currentStepIdx = 0;
     let isTailPassed = false;
+    let dressingCables = [];
 
-    // ストレージ
-    const STORAGE_KEY = 'sintyan_app_data_v2';
+    const STORAGE_KEY = 'sintyan_app_data_v3';
     function saveToStorage() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          cables, routePoints, currentPhase, prepChecks, currentStepIdx, isTailPassed
+          cables, routePoints, currentPhase, prepChecks, currentStepIdx, isTailPassed, dressingCables
         }));
       } catch (e) {}
     }
@@ -508,6 +613,7 @@
           if (d.prepChecks) prepChecks = d.prepChecks;
           if (d.currentStepIdx !== undefined) currentStepIdx = d.currentStepIdx;
           if (d.isTailPassed !== undefined) isTailPassed = d.isTailPassed;
+          if (d.dressingCables) dressingCables = d.dressingCables;
         }
       } catch (e) {}
     }
@@ -520,13 +626,14 @@
         currentPhase = "prep";
         prepChecks = [false, false, false, false];
         currentStepIdx = 0; isTailPassed = false;
+        dressingCables = [];
         fitToCenter(); rebuildNavSteps(); updateUI(); render();
       }
     });
 
     let editMode = false, addMode = false, draggedPtIdx = -1, selectedMenuPtIdx = -1, isTouchMoved = false;
     let lastBgTapTime = 0, lastBgTapX = 0, lastBgTapY = 0;
-    let activePointers = {}; // IDと座標のみ保持（メモリ安全）
+    let activePointers = {};
     let initialPinchDist = 0, initialPinchScale = 1.0, pinchCenter = { x: 0, y: 0 };
 
     let img = null, offset = { x: 0, y: 0 }, scale = 1.0, dashOffset = 0;
@@ -535,7 +642,6 @@
     const canvas = document.getElementById('planCanvas'), ctx = canvas.getContext('2d'), container = document.getElementById('drawing-container');
     const angleBadge = document.getElementById('angle-badge'), pinMenu = document.getElementById('pin-menu-popup');
 
-    // ★重要: メモリ節約のためDPR=1で初期化
     function resizeCanvas() {
       canvas.width = container.clientWidth;
       canvas.height = container.clientHeight;
@@ -544,15 +650,6 @@
     window.addEventListener('resize', resizeCanvas);
 
     function fitToCenter() { offset = { x: 0, y: 0 }; scale = 1.0; render(); }
-
-    function zoomBy(factor) {
-      const cx = container.clientWidth / 2, cy = container.clientHeight / 2;
-      const newScale = Math.min(Math.max(scale * factor, 0.5), 4.0);
-      offset.x = cx - (cx - offset.x) * (newScale / scale);
-      offset.y = cy - (cy - offset.y) * (newScale / scale);
-      scale = newScale;
-      render();
-    }
 
     function snapTo5Degrees(fromX, fromY, toX, toY) {
       const dx = toX - fromX, dy = toY - fromY;
@@ -572,7 +669,6 @@
       return { dist: Math.hypot(p.x - (p1.x + t * dx), p.y - (p1.y + t * dy)), projX: p1.x + t * dx, projY: p1.y + t * dy };
     }
 
-    // 描画ルーチン
     function render() {
       const w = canvas.width, h = canvas.height;
       if (w === 0 || h === 0) return;
@@ -588,11 +684,10 @@
         for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
         for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
         ctx.fillStyle = '#546e7a'; ctx.font = '11px sans-serif';
-        ctx.fillText('図面読込から写真選択、または余白をダブルタップで全体収容', 14, 28);
+        ctx.fillText('余白ダブルタップで全体収容 / 右上「設定」でメニュー展開', 14, 28);
       }
 
       if (routePoints.length > 1) {
-        // 緑の完了線
         ctx.beginPath();
         ctx.moveTo(routePoints[0].x * w, routePoints[0].y * h);
         for (let i = 1; i < routePoints.length; i++) ctx.lineTo(routePoints[i].x * w, routePoints[i].y * h);
@@ -600,7 +695,6 @@
         ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
         ctx.stroke();
 
-        // 延線中の黄色線
         if (currentPhase === 'pulling' && navSteps.length > 0) {
           const targetPtIdx = navSteps[currentStepIdx] !== undefined ? navSteps[currentStepIdx] : routePoints.length - 1;
           let startPtIdx = 0;
@@ -666,7 +760,6 @@
       }
     }
 
-    // ★省エネアニメーション（延線中だけ回す）
     function startAnimIfNeeded() {
       if (animId) return;
       if (currentPhase === 'pulling') {
@@ -816,9 +909,19 @@
       closePinMenu();
     });
 
-    document.getElementById('btn-zoom-in').addEventListener('click', () => zoomBy(1.2));
-    document.getElementById('btn-zoom-out').addEventListener('click', () => zoomBy(0.8));
-    document.getElementById('btn-fit-view').addEventListener('click', fitToCenter);
+    // 設定ボタン開閉
+    const btnSettings = document.getElementById('btn-settings-toggle');
+    const settingsDropdown = document.getElementById('settings-dropdown');
+    btnSettings.addEventListener('click', () => {
+      const isShow = settingsDropdown.classList.toggle('show');
+      btnSettings.classList.toggle('active', isShow);
+    });
+
+    document.getElementById('btn-fit-view').addEventListener('click', () => {
+      fitToCenter();
+      settingsDropdown.classList.remove('show');
+      btnSettings.classList.remove('active');
+    });
 
     const btnEdit = document.getElementById('btn-edit-mode');
     const subBar = document.getElementById('edit-sub-bar');
@@ -847,7 +950,11 @@
     });
 
     const fileInput = document.getElementById('file-input');
-    document.getElementById('btn-load-img').addEventListener('click', () => fileInput.click());
+    document.getElementById('btn-load-img').addEventListener('click', () => {
+      fileInput.click();
+      settingsDropdown.classList.remove('show');
+      btnSettings.classList.remove('active');
+    });
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0]; if (!file) return;
       const reader = new FileReader();
@@ -931,7 +1038,7 @@
         } else {
           curPosText.textContent = "ドラム抜け・始点到達 (余丁確保)";
           nextTargetText.textContent = "全通過完了";
-          btnNext.textContent = "延線完了 ▷";
+          btnNext.textContent = "延線完了 (整線へ送る) ▷";
         }
       } else {
         const nextPt = routePoints[navSteps[currentStepIdx + 1]];
@@ -944,7 +1051,8 @@
     function completePullingAndShiftNext() {
       const activeIdx = cables.findIndex(c => c.status === 'active');
       if (activeIdx !== -1) {
-        cables[activeIdx].status = 'done';
+        cables[activeIdx].status = 'dressing';
+        dressingCables.push(cables[activeIdx].name);
         if (activeIdx + 1 < cables.length) cables[activeIdx + 1].status = 'active';
 
         currentPhase = 'prep';
@@ -969,11 +1077,45 @@
       }
     }
 
+    // 整線管理モーダル
+    document.getElementById('btn-dressing-toggle').addEventListener('click', () => {
+      const modal = document.getElementById('dressing-modal');
+      const list = document.getElementById('dressing-list-content');
+      list.innerHTML = "";
+      if (dressingCables.length === 0) {
+        list.innerHTML = "<div style='color:#90a4ae;font-size:12px;'>現在整線中のケーブルはありません</div>";
+      } else {
+        dressingCables.forEach((name, i) => {
+          const row = document.createElement('div');
+          row.className = 'dressing-row';
+          row.innerHTML = `<span>${name}</span><button class="btn-complete-dressing" data-idx="${i}">整線完了</button>`;
+          list.appendChild(row);
+        });
+        list.querySelectorAll('.btn-complete-dressing').forEach(b => {
+          b.addEventListener('click', (e) => {
+            const idx = parseInt(e.target.getAttribute('data-idx'));
+            const cName = dressingCables[idx];
+            dressingCables.splice(idx, 1);
+            const target = cables.find(c => c.name === cName);
+            if (target) target.status = 'done';
+            saveToStorage();
+            updateUI();
+            document.getElementById('btn-dressing-toggle').click();
+          });
+        });
+      }
+      modal.style.display = 'flex';
+    });
+    document.getElementById('btn-close-dressing').addEventListener('click', () => {
+      document.getElementById('dressing-modal').style.display = 'none';
+    });
+
     function updateUI() {
       const activeIdx = cables.findIndex(c => c.status === 'active');
       const doneCount = cables.filter(c => c.status === 'done').length;
       document.getElementById('done-count').textContent = doneCount;
       document.getElementById('total-count').textContent = cables.length;
+      document.getElementById('btn-dressing-toggle').textContent = `🔧 整線中: ${dressingCables.length}本`;
 
       if (activeIdx !== -1) {
         document.getElementById('now-cable').textContent = cables[activeIdx].name;
@@ -989,6 +1131,7 @@
         if (c) {
           if (c.status === 'done') el.classList.add('done');
           if (c.status === 'active') el.classList.add('active');
+          if (c.status === 'dressing') el.classList.add('dressing');
         }
       });
 
@@ -1011,11 +1154,16 @@
       }
     }
 
-    const panelToggle = document.getElementById('panel-toggle'), rackContent = document.getElementById('rack-view-content'), toggleIcon = document.getElementById('toggle-icon');
-    panelToggle.addEventListener('click', () => {
-      const isHidden = rackContent.style.display === 'none';
-      rackContent.style.display = isHidden ? 'flex' : 'none';
-      toggleIcon.textContent = isHidden ? '▲' : '▼';
+    // 断面パネル開閉
+    let isPanelOpen = false;
+    const panelToggleBtn = document.getElementById('panel-toggle');
+    const rackViewContent = document.getElementById('rack-view-content');
+    const toggleIcon = document.getElementById('toggle-icon');
+
+    panelToggleBtn.addEventListener('click', () => {
+      isPanelOpen = !isPanelOpen;
+      rackViewContent.style.display = isPanelOpen ? 'flex' : 'none';
+      toggleIcon.textContent = isPanelOpen ? '▼ 閉じる' : '▲ 開く';
     });
 
     // 起動
